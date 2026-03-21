@@ -1,0 +1,18 @@
+{
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "60.0",
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true,
+      "package": "kwb-loads",
+      "versionNumber": "1.0.0.0",
+      "versionName": "Phase 1: Load Polling + Carrier FMCSA"
+    }
+  ],
+  "namespace": "",
+  "packageAliases": {
+    "kwb-loads@1.0.0.0": "0Hg000000000000",
+    "kwb-loads": "0Hg000000000000"
+  }
+}

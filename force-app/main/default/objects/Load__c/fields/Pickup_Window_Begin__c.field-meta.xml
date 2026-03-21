@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pickup_Window_Begin__c</fullName>
+    <description>Earliest pickup time from Loadsmart</description>
+    <externalId>false</externalId>
+    <label>Pickup Window Begin</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <type>DateTime</type>
+</CustomField>

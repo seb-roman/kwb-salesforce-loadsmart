@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Loadsmart_Synced__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Has carrier/rate been pushed back to Loadsmart?</description>
+    <externalId>false</externalId>
+    <label>Loadsmart Synced</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

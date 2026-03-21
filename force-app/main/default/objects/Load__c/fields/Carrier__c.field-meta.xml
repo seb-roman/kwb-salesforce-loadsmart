@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Carrier__c</fullName>
+    <description>Carrier assigned to execute the load</description>
+    <externalId>false</externalId>
+    <label>Carrier</label>
+    <referenceTo>Carrier__c</referenceTo>
+    <relationshipLabel>Loads</relationshipLabel>
+    <relationshipName>Loads</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>
