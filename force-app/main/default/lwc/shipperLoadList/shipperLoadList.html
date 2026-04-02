@@ -1,0 +1,190 @@
+<template>
+    <div class="slds-container slds-container_large slds-var-p-top_large">
+        <!-- Page Header -->
+        <div class="slds-page-header">
+            <div class="slds-page-header__row">
+                <h1 class="slds-page-header__title slds-text-heading_medium">Load List</h1>
+            </div>
+            <div class="slds-page-header__detail slds-text-body_small">
+                Track and manage all your loads
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="slds-card slds-var-margin-top_large">
+            <div class="slds-card__header slds-has-bottom-magnet">
+                <h2 class="slds-text-heading_small">Filters</h2>
+            </div>
+            <div class="slds-card__body">
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="status-filter">Status</label>
+                            <div class="slds-form-element__control">
+                                <select id="status-filter" 
+                                        class="slds-select" 
+                                        value={statusFilter}
+                                        onchange={handleStatusFilterChange}
+                                        aria-label="Filter loads by status">
+                                    <template for:each={statusOptions} for:item="option">
+                                        <option key={option.value} value={option.value}>{option.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="date-from">From Date</label>
+                            <div class="slds-form-element__control">
+                                <input type="date" 
+                                       id="date-from" 
+                                       class="slds-input" 
+                                       value={dateFromFilter}
+                                       onchange={handleDateFromChange} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="date-to">To Date</label>
+                            <div class="slds-form-element__control">
+                                <input type="date" 
+                                       id="date-to" 
+                                       class="slds-input" 
+                                       value={dateToFilter}
+                                       onchange={handleDateToChange} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-3">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="load-type">Load Type</label>
+                            <div class="slds-form-element__control">
+                                <select id="load-type" 
+                                        class="slds-select" 
+                                        value={loadTypeFilter}
+                                        onchange={handleLoadTypeChange}
+                                        aria-label="Filter loads by type">
+                                    <template for:each={loadTypeOptions} for:item="option">
+                                        <option key={option.value} value={option.value}>{option.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loads Table -->
+        <div class="slds-card slds-var-margin-top_large">
+            <div class="slds-card__header slds-has-bottom-magnet">
+                <h2 class="slds-text-heading_small">
+                    Loads ({pageInfo})
+                </h2>
+            </div>
+            <div class="slds-card__body" aria-busy={isLoading}>
+                <template if:true={isLoading}>
+                    <div class="slds-spinner_container slds-is-fixed">
+                        <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                            <span class="slds-assistive-text">Loading loads...</span>
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:false={isLoading}>
+                    <div class="slds-scrollable_x">
+                        <table class="slds-table slds-table_cell-buffer slds-table_striped-rows-hover">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col" id="load-header">
+                                        <div class="slds-cell-wrap">Load #</div>
+                                    </th>
+                                    <th class="" scope="col" id="pickup-city-header">
+                                        <div class="slds-cell-wrap">Pickup City</div>
+                                    </th>
+                                    <th class="" scope="col" id="delivery-city-header">
+                                        <div class="slds-cell-wrap">Delivery City</div>
+                                    </th>
+                                    <th class="" scope="col" id="status-header">
+                                        <div class="slds-cell-wrap">Status</div>
+                                    </th>
+                                    <th class="" scope="col" id="eta-header">
+                                        <div class="slds-cell-wrap">ETA</div>
+                                    </th>
+                                    <th class="" scope="col" id="rate-header">
+                                        <div class="slds-cell-wrap">Rate</div>
+                                    </th>
+                                    <th class="" scope="col" id="actions-header">
+                                        <div class="slds-cell-wrap">Actions</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template if:true={loads} for:each={loads} for:item="load">
+                                    <tr key={load.Id} class="slds-line-height_reset">
+                                        <td class="slds-cell-wrap" headers="load-header">{load.Name}</td>
+                                        <td class="slds-cell-wrap" headers="pickup-city-header">{load.Pickup_City__c}</td>
+                                        <td class="slds-cell-wrap" headers="delivery-city-header">{load.Delivery_City__c}</td>
+                                        <td class="slds-cell-wrap" headers="status-header">
+                                            <span class={load.statusClass}>{load.Status__c}</span>
+                                        </td>
+                                        <td class="slds-cell-wrap" headers="eta-header">
+                                            {load.Estimated_Delivery__c}
+                                        </td>
+                                        <td class="slds-cell-wrap slds-text-align_right" headers="rate-header">
+                                            ${load.Shipper_Rate__c}
+                                        </td>
+                                        <td class="slds-cell-wrap" headers="actions-header">
+                                            <button class="slds-button slds-button_neutral slds-button_small" 
+                                                    onclick={handleViewDetails} 
+                                                    data-load-id={load.Id}
+                                                    aria-label="View details for load {load.Name}">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination with Accessibility -->
+                    <nav aria-label="Load list pagination" class="slds-var-p-top_medium slds-var-p-bottom_medium slds-text-align_center">
+                        <button class="slds-button slds-button_neutral" 
+                                onclick={handlePreviousPage}
+                                disabled={!canPrevious}
+                                aria-label="Go to previous page">
+                            ← Previous
+                        </button>
+                        <span aria-live="polite" aria-atomic="true" class="slds-var-p-left_medium slds-var-p-right_medium">
+                            Page {pageNumber} of {totalPages} ({totalRecords} total loads)
+                        </span>
+                        <button class="slds-button slds-button_neutral" 
+                                onclick={handleNextPage}
+                                disabled={!canNext}
+                                aria-label="Go to next page">
+                            Next →
+                        </button>
+                    </nav>
+                </template>
+
+                <!-- Empty State -->
+                <template if:true={isEmptyList}>
+                    <div class="slds-illustration slds-var-p-top_large slds-var-p-bottom_large">
+                        <div class="slds-text-align_center">
+                            <p class="slds-text-body_regular">No loads found matching your filters.</p>
+                            <p class="slds-text-body_small slds-text-color_weak">Try adjusting your filters or check back soon.</p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

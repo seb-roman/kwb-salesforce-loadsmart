@@ -8,43 +8,83 @@
     <trackHistory>true</trackHistory>
     <type>Picklist</type>
     <valueSet>
-        <restricted>false</restricted>
+        <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Pending</fullName>
+                <fullName>draft</fullName>
                 <default>true</default>
-                <label>Pending</label>
+                <label>Draft</label>
             </value>
             <value>
-                <fullName>Assigned</fullName>
+                <fullName>posted</fullName>
                 <default>false</default>
-                <label>Assigned</label>
+                <label>Posted</label>
             </value>
             <value>
-                <fullName>Confirmed</fullName>
+                <fullName>quoted</fullName>
                 <default>false</default>
-                <label>Confirmed</label>
+                <label>Quoted</label>
             </value>
             <value>
-                <fullName>Picked Up</fullName>
+                <fullName>tendered</fullName>
                 <default>false</default>
-                <label>Picked Up</label>
+                <label>Tendered</label>
             </value>
             <value>
-                <fullName>In Transit</fullName>
+                <fullName>accepted</fullName>
+                <default>false</default>
+                <label>Accepted</label>
+            </value>
+            <value>
+                <fullName>dispatched</fullName>
+                <default>false</default>
+                <label>Dispatched</label>
+            </value>
+            <value>
+                <fullName>in_transit</fullName>
                 <default>false</default>
                 <label>In Transit</label>
             </value>
             <value>
-                <fullName>Delivered</fullName>
+                <fullName>delivered</fullName>
                 <default>false</default>
                 <label>Delivered</label>
             </value>
             <value>
-                <fullName>Invoiced</fullName>
+                <fullName>pod_captured</fullName>
+                <default>false</default>
+                <label>POD Captured</label>
+            </value>
+            <value>
+                <fullName>invoiced</fullName>
                 <default>false</default>
                 <label>Invoiced</label>
+            </value>
+            <value>
+                <fullName>settled</fullName>
+                <default>false</default>
+                <label>Settled</label>
+            </value>
+            <value>
+                <fullName>completed</fullName>
+                <default>false</default>
+                <label>Completed</label>
+            </value>
+            <value>
+                <fullName>cancelled</fullName>
+                <default>false</default>
+                <label>Cancelled</label>
+            </value>
+            <value>
+                <fullName>exception</fullName>
+                <default>false</default>
+                <label>Exception</label>
+            </value>
+            <value>
+                <fullName>disputed</fullName>
+                <default>false</default>
+                <label>Disputed</label>
             </value>
         </valueSetDefinition>
     </valueSet>

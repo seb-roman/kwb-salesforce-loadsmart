@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hazmat_Certification_Expiration__c</fullName>
+    <description>Date when hazmat certification expires (if applicable)</description>
+    <externalId>false</externalId>
+    <label>Hazmat Certification Expiration</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Date</type>
+</CustomField>

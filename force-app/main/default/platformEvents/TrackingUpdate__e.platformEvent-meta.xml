@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PlatformEvent xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Platform event fired when a Tracking record is created/updated. Used for real-time dashboard refresh and exception detection triggers.</description>
+    <fields>
+        <fullName>Load_Id__c</fullName>
+        <description>ID of the Load record that was tracked</description>
+        <label>Load Id</label>
+        <length>18</length>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Tracking_Id__c</fullName>
+        <description>ID of the Tracking record created/updated</description>
+        <label>Tracking Id</label>
+        <length>18</length>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Event_Type__c</fullName>
+        <description>Type of tracking event (arrived_at_pickup, delivery_complete, etc.)</description>
+        <label>Event Type</label>
+        <length>50</length>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Latitude__c</fullName>
+        <description>Current latitude</description>
+        <label>Latitude</label>
+        <precision>9</precision>
+        <scale>6</scale>
+        <type>Number</type>
+    </fields>
+    <fields>
+        <fullName>Longitude__c</fullName>
+        <description>Current longitude</description>
+        <label>Longitude</label>
+        <precision>9</precision>
+        <scale>6</scale>
+        <type>Number</type>
+    </fields>
+    <fields>
+        <fullName>Speed_mph__c</fullName>
+        <description>Current speed in mph</description>
+        <label>Speed (mph)</label>
+        <precision>5</precision>
+        <scale>1</scale>
+        <type>Number</type>
+    </fields>
+    <fields>
+        <fullName>Driver_Id__c</fullName>
+        <description>ID of the Driver record</description>
+        <label>Driver Id</label>
+        <length>18</length>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Event_Timestamp__c</fullName>
+        <description>ISO 8601 timestamp of when event occurred</description>
+        <label>Event Timestamp</label>
+        <length>30</length>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Sequence_Number__c</fullName>
+        <description>Sequence number for ordering events chronologically</description>
+        <label>Sequence Number</label>
+        <precision>10</precision>
+        <scale>0</scale>
+        <type>Number</type>
+    </fields>
+    <label>Tracking Update</label>
+    <pluralLabel>Tracking Updates</pluralLabel>
+    <publishBehavior>PublishImmediately</publishBehavior>
+</PlatformEvent>

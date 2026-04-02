@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status_Reason__c</fullName>
+    <description>Detailed reason for current status or exception (e.g., delayed pickup, carrier cancelled, etc.)</description>
+    <externalId>false</externalId>
+    <label>Status Reason</label>
+    <length>500</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

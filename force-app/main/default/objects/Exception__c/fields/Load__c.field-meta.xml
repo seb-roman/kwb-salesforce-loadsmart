@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Load__c</fullName>
+    <description>Link to the Load that triggered the exception</description>
+    <externalId>false</externalId>
+    <label>Load</label>
+    <referenceTo>Load__c</referenceTo>
+    <relationshipLabel>Exceptions</relationshipLabel>
+    <relationshipName>Exceptions</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

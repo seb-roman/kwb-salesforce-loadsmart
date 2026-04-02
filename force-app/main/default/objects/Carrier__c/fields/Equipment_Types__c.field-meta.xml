@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Equipment_Types__c</fullName>
+    <description>Types of equipment carrier operates</description>
+    <externalId>false</externalId>
+    <label>Equipment Types</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>MultiselectPicklist</type>
+    <visibleLines>10</visibleLines>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Flatbed</fullName>
+                <default>false</default>
+                <label>Flatbed</label>
+            </value>
+            <value>
+                <fullName>Van</fullName>
+                <default>false</default>
+                <label>Van (Dry)</label>
+            </value>
+            <value>
+                <fullName>Reefer</fullName>
+                <default>false</default>
+                <label>Refrigerated (Reefer)</label>
+            </value>
+            <value>
+                <fullName>Tank</fullName>
+                <default>false</default>
+                <label>Tank/Tanker</label>
+            </value>
+            <value>
+                <fullName>Dump</fullName>
+                <default>false</default>
+                <label>Dump</label>
+            </value>
+            <value>
+                <fullName>Specialized</fullName>
+                <default>false</default>
+                <label>Specialized (Heavy)</label>
+            </value>
+            <value>
+                <fullName>Container</fullName>
+                <default>false</default>
+                <label>Container/Intermodal</label>
+            </value>
+            <value>
+                <fullName>Lowboy</fullName>
+                <default>false</default>
+                <label>Lowboy</label>
+            </value>
+            <value>
+                <fullName>Step_Deck</fullName>
+                <default>false</default>
+                <label>Step Deck</label>
+            </value>
+            <value>
+                <fullName>Auto_Transport</fullName>
+                <default>false</default>
+                <label>Auto Transport</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

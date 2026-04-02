@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Load__c</fullName>
+    <description>Load that this stop belongs to</description>
+    <externalId>false</externalId>
+    <label>Load</label>
+    <referenceTo>Load__c</referenceTo>
+    <relationshipLabel>Stops</relationshipLabel>
+    <relationshipName>Stops</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <type>MasterDetail</type>
+</CustomField>

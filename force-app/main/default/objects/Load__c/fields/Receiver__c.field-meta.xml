@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Receiver__c</fullName>
+    <description>Receiver (Account lookup) - destination of freight</description>
+    <externalId>false</externalId>
+    <label>Receiver</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Loads (Receiver)</relationshipLabel>
+    <relationshipName>Loads_Receiver</relationshipName>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>

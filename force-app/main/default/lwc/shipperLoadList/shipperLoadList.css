@@ -1,0 +1,65 @@
+.slds-scrollable_x {
+    overflow-x: auto;
+}
+
+.slds-cell-wrap {
+    word-break: break-word;
+    white-space: normal;
+}
+
+table {
+    width: 100%;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+th {
+    padding: 12px;
+    background-color: #f7f7f7;
+    text-align: left;
+    font-weight: 600;
+}
+
+.slds-text-color_success {
+    color: #04844b;
+}
+
+.slds-text-color_default {
+    color: #0070d2;
+}
+
+.slds-text-color_warning {
+    color: #f09800;
+}
+
+.slds-text-color_error {
+    color: #c23030;
+}
+
+@media (max-width: 768px) {
+    table {
+        font-size: 12px;
+    }
+    
+    td, th {
+        padding: 8px;
+    }
+    
+    .slds-button_small {
+        padding: 2px 8px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 375px) {
+    table {
+        font-size: 10px;
+    }
+    
+    td, th {
+        padding: 6px;
+    }
+}

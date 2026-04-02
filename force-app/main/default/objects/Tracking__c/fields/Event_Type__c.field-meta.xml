@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Event_Type__c</fullName>
+    <description>Type of tracking event (arrived_at_pickup, in_transit, arrived_at_delivery, etc.)</description>
+    <externalId>false</externalId>
+    <label>Event Type</label>
+    <picklist>
+        <picklistValues>
+            <fullName>arrived_at_pickup</fullName>
+            <default>false</default>
+            <label>Arrived at Pickup</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>arrived_at_delivery</fullName>
+            <default>false</default>
+            <label>Arrived at Delivery</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>in_transit</fullName>
+            <default>false</default>
+            <label>In Transit</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>pickup_complete</fullName>
+            <default>false</default>
+            <label>Pickup Complete</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>delivery_complete</fullName>
+            <default>false</default>
+            <label>Delivery Complete</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>en_route_to_pickup</fullName>
+            <default>false</default>
+            <label>En Route to Pickup</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>en_route_to_delivery</fullName>
+            <default>false</default>
+            <label>En Route to Delivery</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>idle_parked</fullName>
+            <default>false</default>
+            <label>Idle/Parked</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>vehicle_location_update</fullName>
+            <default>false</default>
+            <label>Vehicle Location Update</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>delay_traffic</fullName>
+            <default>false</default>
+            <label>Delay Traffic</label>
+        </picklistValues>
+        <sorted>false</sorted>
+    </picklist>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+</CustomField>

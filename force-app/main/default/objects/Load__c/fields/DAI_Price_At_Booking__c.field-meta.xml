@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>DAI_Price_At_Booking__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>Diesel Average Index (DAI) price locked at time of booking. Used to calculate fuel surcharge. Once set, this price does not change to prevent disputes over final charges.</inlineHelpText>
+    <label>DAI Price At Booking</label>
+    <precision>10</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>true</trackHistory>
+    <type>Currency</type>
+</CustomField>

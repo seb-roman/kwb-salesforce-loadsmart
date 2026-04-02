@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Current_Load__c</fullName>
+    <description>Load currently assigned to this equipment (if any)</description>
+    <externalId>false</externalId>
+    <label>Current Load</label>
+    <referenceTo>Load__c</referenceTo>
+    <relationshipLabel>Equipment Assigned</relationshipLabel>
+    <relationshipName>Equipment_Assignment</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>

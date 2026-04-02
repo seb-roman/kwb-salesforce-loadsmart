@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Total_Carrier_Cost__c</fullName>
+    <description>Total cost paid to carrier (base rate + fuel surcharge)</description>
+    <externalId>false</externalId>
+    <formula>Carrier_Rate__c + IF(ISNULL(Carrier_Fuel_Surcharge__c), 0, Carrier_Fuel_Surcharge__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Total Carrier Cost</label>
+    <precision>12</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Currency</type>
+</CustomField>

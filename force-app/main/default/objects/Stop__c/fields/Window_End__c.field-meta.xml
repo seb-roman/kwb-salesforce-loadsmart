@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Window_End__c</fullName>
+    <description>Scheduled end time for this stop</description>
+    <externalId>false</externalId>
+    <label>Window End</label>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <type>DateTime</type>
+</CustomField>

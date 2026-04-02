@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Exception_Type__c</fullName>
+    <description>Type of exception triggered</description>
+    <externalId>false</externalId>
+    <label>Exception Type</label>
+    <picklist>
+        <picklistValues>
+            <fullName>late_arrival</fullName>
+            <default>false</default>
+            <label>Late Arrival</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>missed_pickup</fullName>
+            <default>false</default>
+            <label>Missed Pickup</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>long_idle</fullName>
+            <default>false</default>
+            <label>Long Idle</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>offline</fullName>
+            <default>false</default>
+            <label>Offline</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>geofence_breach</fullName>
+            <default>false</default>
+            <label>Geofence Breach</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>hos_violation</fullName>
+            <default>false</default>
+            <label>HOS Violation</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>refused_load</fullName>
+            <default>false</default>
+            <label>Refused Load</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>mechanical_breakdown</fullName>
+            <default>false</default>
+            <label>Mechanical Breakdown</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>weather_delay</fullName>
+            <default>false</default>
+            <label>Weather Delay</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>stuck_in_traffic</fullName>
+            <default>false</default>
+            <label>Stuck in Traffic</label>
+        </picklistValues>
+        <picklistValues>
+            <fullName>quick_turnaround</fullName>
+            <default>false</default>
+            <label>Quick Turnaround</label>
+        </picklistValues>
+        <sorted>false</sorted>
+    </picklist>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+</CustomField>

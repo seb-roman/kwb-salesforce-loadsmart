@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Late__c</fullName>
+    <description>Indicates if actual delivery is later than the delivery window end time</description>
+    <externalId>false</externalId>
+    <formula>IF(AND(NOT(ISNULL(Delivery_Window_Actual_Begin__c)), Delivery_Window_Actual_Begin__c > Delivery_Window_End__c), true, false)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Is Late</label>
+    <required>false</required>
+    <type>Checkbox</type>
+</CustomField>
