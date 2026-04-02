@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VAL_Carrier_Rate_Not_Exceeds_Shipper_Rate</fullName>
+    <active>true</active>
+    <description>Carrier rate cannot exceed shipper/billing rate. Prevents negative margins (losing money on loads).</description>
+    <errorConditionFormula>AND(
+        NOT(ISBLANK(Carrier_Rate__c)),
+        NOT(ISBLANK(Billing_Rate__c)),
+        Carrier_Rate__c > Billing_Rate__c
+    )</errorConditionFormula>
+    <errorDisplayField>Carrier_Rate__c</errorDisplayField>
+    <errorMessage>Carrier Rate cannot exceed Billing Rate. This would result in a negative margin (loss). Please adjust rates.</errorMessage>
+</ValidationRule>

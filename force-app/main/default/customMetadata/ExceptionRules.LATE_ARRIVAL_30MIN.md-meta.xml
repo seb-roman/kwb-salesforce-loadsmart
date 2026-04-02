@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Late Arrival - 30 Minutes</label>
+    <protected>false</protected>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">true</value>
+    </values>
+    <values>
+        <field>Rule_Type__c</field>
+        <value xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">LATE_ARRIVAL</value>
+    </values>
+    <values>
+        <field>Threshold_Minutes__c</field>
+        <value xsi:type="xsd:double" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">30</value>
+    </values>
+    <values>
+        <field>Severity__c</field>
+        <value xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Alert</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">Driver arrived more than 30 minutes after scheduled pickup window</value>
+    </values>
+</CustomMetadata>

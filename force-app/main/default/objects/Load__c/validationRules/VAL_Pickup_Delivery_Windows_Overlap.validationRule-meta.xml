@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VAL_Pickup_Delivery_Windows_Overlap</fullName>
+    <active>true</active>
+    <description>Pickup and Delivery window end dates must be after their respective begin dates. Time windows must be valid (end >= begin).</description>
+    <errorConditionFormula>OR(
+        AND(
+            NOT(ISBLANK(Pickup_Window_Begin__c)),
+            NOT(ISBLANK(Pickup_Window_End__c)),
+            Pickup_Window_End__c &lt; Pickup_Window_Begin__c
+        ),
+        AND(
+            NOT(ISBLANK(Delivery_Window_Begin__c)),
+            NOT(ISBLANK(Delivery_Window_End__c)),
+            Delivery_Window_End__c &lt; Delivery_Window_Begin__c
+        )
+    )</errorConditionFormula>
+    <errorDisplayField>Pickup_Window_End__c</errorDisplayField>
+    <errorMessage>Window end time must be after window begin time. Please verify your pickup and delivery time windows are valid.</errorMessage>
+</ValidationRule>

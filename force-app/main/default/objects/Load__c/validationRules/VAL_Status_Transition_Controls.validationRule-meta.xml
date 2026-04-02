@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VAL_Status_Transition_Controls</fullName>
+    <active>true</active>
+    <description>Enforces valid status transitions. Cannot jump from draft directly to invoiced/completed without intermediate states.</description>
+    <errorConditionFormula>AND(
+        ISCHANGED(Status__c),
+        OR(
+            AND(PRIORVALUE(Status__c) = "draft", NOT(OR(Status__c = "posted", Status__c = "quoted", Status__c = "cancelled"))),
+            AND(PRIORVALUE(Status__c) = "posted", NOT(OR(Status__c = "quoted", Status__c = "tendered", Status__c = "cancelled"))),
+            AND(PRIORVALUE(Status__c) = "quoted", NOT(OR(Status__c = "tendered", Status__c = "posted", Status__c = "cancelled"))),
+            AND(PRIORVALUE(Status__c) = "tendered", NOT(OR(Status__c = "accepted", Status__c = "cancelled"))),
+            AND(PRIORVALUE(Status__c) = "accepted", NOT(OR(Status__c = "dispatched", Status__c = "cancelled"))),
+            AND(PRIORVALUE(Status__c) = "dispatched", NOT(OR(Status__c = "in_transit", Status__c = "cancelled"))),
+            AND(PRIORVALUE(Status__c) = "in_transit", NOT(OR(Status__c = "delivered", Status__c = "exception", Status__c = "cancelled"))),
+            AND(PRIORVALUE(Status__c) = "delivered", NOT(OR(Status__c = "pod_captured", Status__c = "exception", Status__c = "cancelled"))),
+            AND(PRIORVALUE(Status__c) = "pod_captured", NOT(OR(Status__c = "invoiced", Status__c = "exception", Status__c = "disputed"))),
+            AND(PRIORVALUE(Status__c) = "invoiced", NOT(OR(Status__c = "settled", Status__c = "disputed"))),
+            AND(PRIORVALUE(Status__c) = "settled", NOT(OR(Status__c = "completed", Status__c = "disputed"))),
+            AND(PRIORVALUE(Status__c) = "completed", Status__c != "completed"),
+            AND(PRIORVALUE(Status__c) = "cancelled", Status__c != "cancelled")
+        )
+    )</errorConditionFormula>
+    <errorDisplayField>Status__c</errorDisplayField>
+    <errorMessage>Invalid status transition. Please follow the workflow: Draft → Posted/Quoted → Tendered → Accepted → Dispatched → In Transit → Delivered → POD Captured → Invoiced → Settled → Completed. Cancelled is a terminal state.</errorMessage>
+</ValidationRule>

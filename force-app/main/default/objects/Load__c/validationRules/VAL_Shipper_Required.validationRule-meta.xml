@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VAL_Shipper_Required</fullName>
+    <active>true</active>
+    <description>Shipper is required for all loads. Shipper account must be linked for billing and tracking purposes.</description>
+    <errorConditionFormula>AND(
+        NOT(ISBLANK(Status__c)),
+        Status__c != "draft",
+        ISBLANK(Shipper__c)
+    )</errorConditionFormula>
+    <errorDisplayField>Shipper__c</errorDisplayField>
+    <errorMessage>Shipper is required for posted loads. Please select or create a shipper account before posting.</errorMessage>
+</ValidationRule>

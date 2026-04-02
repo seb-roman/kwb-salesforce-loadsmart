@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VAL_Delivery_After_Pickup</fullName>
+    <active>true</active>
+    <description>Delivery date/time must be after pickup date/time. Ensures logical transit sequence.</description>
+    <errorConditionFormula>AND(
+        NOT(ISBLANK(Estimated_Delivery_DateTime__c)),
+        NOT(ISBLANK(Pickup_Window_Begin__c)),
+        Estimated_Delivery_DateTime__c &lt;= Pickup_Window_Begin__c
+    )</errorConditionFormula>
+    <errorDisplayField>Estimated_Delivery_DateTime__c</errorDisplayField>
+    <errorMessage>Estimated Delivery DateTime must be after Pickup Window Begin. Please verify your dates.</errorMessage>
+</ValidationRule>

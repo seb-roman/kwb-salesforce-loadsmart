@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>Rate Card Configuration</label>
+    <pluralLabel>Rate Card Configurations</pluralLabel>
+    <fields>
+        <fullName>Baseline_DAI_Price__c</fullName>
+        <description>Baseline DAI (Dedicated Autonomous Interaction) price per mile</description>
+        <label>Baseline DAI Price</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Number</type>
+    </fields>
+    <fields>
+        <fullName>Fuel_Surcharge_Percent__c</fullName>
+        <description>Fuel surcharge percentage applied to base rates</description>
+        <label>Fuel Surcharge Percent</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Number</type>
+    </fields>
+    <fields>
+        <fullName>Effective_Date__c</fullName>
+        <description>Date when the rate card becomes effective</description>
+        <label>Effective Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Expiry_Date__c</fullName>
+        <description>Date when the rate card expires</description>
+        <label>Expiry Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Equipment_Type__c</fullName>
+        <description>Equipment type this rate applies to</description>
+        <label>Equipment Type</label>
+        <length>50</length>
+        <required>false</required>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Active__c</fullName>
+        <description>Whether this rate card configuration is currently active</description>
+        <label>Active</label>
+        <required>false</required>
+        <type>Checkbox</type>
+    </fields>
+    <visibility>Public</visibility>
+</CustomMetadata>

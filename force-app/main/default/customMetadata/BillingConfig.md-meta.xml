@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <label>Billing Configuration</label>
+    <pluralLabel>Billing Configurations</pluralLabel>
+    <fields>
+        <fullName>Invoice_Email_Template__c</fullName>
+        <description>Email template name used for invoice delivery</description>
+        <label>Invoice Email Template</label>
+        <length>100</length>
+        <required>false</required>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Settlement_Day_Of_Week__c</fullName>
+        <description>Day of week when settlements are processed (Monday, Tuesday, etc.)</description>
+        <label>Settlement Day Of Week</label>
+        <required>false</required>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Monday</fullName>
+                    <default>false</default>
+                    <label>Monday</label>
+                </value>
+                <value>
+                    <fullName>Tuesday</fullName>
+                    <default>false</default>
+                    <label>Tuesday</label>
+                </value>
+                <value>
+                    <fullName>Wednesday</fullName>
+                    <default>false</default>
+                    <label>Wednesday</label>
+                </value>
+                <value>
+                    <fullName>Thursday</fullName>
+                    <default>false</default>
+                    <label>Thursday</label>
+                </value>
+                <value>
+                    <fullName>Friday</fullName>
+                    <default>false</default>
+                    <label>Friday</label>
+                </value>
+                <value>
+                    <fullName>Saturday</fullName>
+                    <default>false</default>
+                    <label>Saturday</label>
+                </value>
+                <value>
+                    <fullName>Sunday</fullName>
+                    <default>false</default>
+                    <label>Sunday</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Payment_Methods__c</fullName>
+        <description>Allowed payment methods (comma-separated)</description>
+        <label>Payment Methods</label>
+        <length>200</length>
+        <required>false</required>
+        <type>Text</type>
+    </fields>
+    <fields>
+        <fullName>Default_Invoice_Days__c</fullName>
+        <description>Default number of days allowed for payment</description>
+        <label>Default Invoice Days</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+    </fields>
+    <fields>
+        <fullName>Late_Payment_Penalty_Percent__c</fullName>
+        <description>Percentage penalty applied to late payments</description>
+        <label>Late Payment Penalty Percent</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Number</type>
+    </fields>
+    <fields>
+        <fullName>Minimum_Invoice_Amount__c</fullName>
+        <description>Minimum invoice amount for billing</description>
+        <label>Minimum Invoice Amount</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Active__c</fullName>
+        <description>Whether this billing configuration is active</description>
+        <label>Active</label>
+        <required>false</required>
+        <type>Checkbox</type>
+    </fields>
+    <visibility>Public</visibility>
+</CustomMetadata>

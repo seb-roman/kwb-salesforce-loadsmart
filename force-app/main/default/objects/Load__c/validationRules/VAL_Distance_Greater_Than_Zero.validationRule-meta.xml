@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VAL_Distance_Greater_Than_Zero</fullName>
+    <active>true</active>
+    <description>Distance must be greater than zero for FTL loads. Zero distance is not valid for freight transportation.</description>
+    <errorConditionFormula>AND(
+        NOT(ISBLANK(Distance_Miles__c)),
+        Distance_Miles__c &lt;= 0
+    )</errorConditionFormula>
+    <errorDisplayField>Distance_Miles__c</errorDisplayField>
+    <errorMessage>Distance must be greater than zero. Please enter a valid distance in miles.</errorMessage>
+</ValidationRule>

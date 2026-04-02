@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VAL_Weight_Greater_Than_Zero</fullName>
+    <active>true</active>
+    <description>Weight must be greater than zero. Empty loads have no commercial purpose.</description>
+    <errorConditionFormula>AND(
+        NOT(ISBLANK(Weight_lbs__c)),
+        Weight_lbs__c &lt;= 0
+    )</errorConditionFormula>
+    <errorDisplayField>Weight_lbs__c</errorDisplayField>
+    <errorMessage>Weight must be greater than zero. Please enter the actual cargo weight in pounds.</errorMessage>
+</ValidationRule>

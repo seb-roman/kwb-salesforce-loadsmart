@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Status_Label__c</fullName>
+    <description>Status label with timestamp showing when the status was last updated.</description>
+    <externalId>false</externalId>
+    <formula>Status__c &amp; " (" &amp; TEXT(Modified_DateTime__c, "MM/dd/yyyy HH:mm") &amp; ")"</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Status Label</label>
+    <required>false</required>
+    <type>Text</type>
+</CustomField>
