@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Alvys_Load_Number__c</fullName>
-    <description>Legacy Alvys load number for reference/migration purposes</description>
+    <fullName>Legacy_Load_ID__c</fullName>
+    <description>External load identifier from legacy system. Used for data migration via Salesforce Data Loader to match imported records during initial data migration.</description>
     <externalId>true</externalId>
-    <label>Alvys Load Number</label>
+    <label>Legacy Load ID</label>
     <length>255</length>
     <required>false</required>
     <trackHistory>false</trackHistory>

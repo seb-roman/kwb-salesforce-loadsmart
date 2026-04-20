@@ -105,7 +105,7 @@ All files ready for `sfdx force:source:push` deployment.
 
 | Field Name | Type | Required | Notes |
 |-----------|------|----------|-------|
-| **Alvys_Load_Number__c** | Text (External ID) | No | Migration reference |
+| **Legacy_Load_ID__c** | Text (External ID) | No | Data Loader migration reference |
 | **Created_DateTime__c** | DateTime | No | Audit timestamp |
 | **Modified_DateTime__c** | DateTime | No | Audit timestamp |
 | **Created_By__c** | Lookup (User) | No | Audit user |
@@ -115,7 +115,7 @@ All files ready for `sfdx force:source:push` deployment.
 
 | Field Name | Type | Required | Notes |
 |-----------|------|----------|-------|
-| **Record_Source__c** | Picklist | No | Loadsmart / Alvys / Manual / EDI |
+| **Record_Source__c** | Picklist | No | Loadsmart / Data Loader / Manual / EDI |
 | **Is_Exception__c** | Checkbox | No | Flags exceptions/issues |
 | **Status_Reason__c** | Text (500) | No | Detailed reason for status |
 
@@ -265,7 +265,7 @@ All files ready for `sfdx force:source:push` deployment.
 All objects include:
 - `Created_DateTime__c` / `Modified_DateTime__c`
 - `Created_By__c` / `Modified_By__c`
-- `Record_Source__c` (Loadsmart / Alvys / Manual / EDI)
+- `Record_Source__c` (Loadsmart / Data Loader / Manual / EDI)
 - Field history tracking on key fields
 
 ### 4. ✅ Picklists for All Enumerations
@@ -275,7 +275,7 @@ All objects include:
 
 ### 5. ✅ External IDs for Integration
 - `Loadsmart_Shipment_ID__c` (Load) — API key
-- `Alvys_Load_Number__c` (Load) — legacy reference
+- `Legacy_Load_ID__c` (Load) — data migration reference
 - `License_Number__c` (Driver) — unique per driver
 - `Unit_Number__c` (Equipment) — unique per carrier
 - `VIN__c` (Equipment) — unique asset ID

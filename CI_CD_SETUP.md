@@ -267,7 +267,7 @@ If production deployment fails:
 # If automatic rollback fails, do this manually:
 sfdx force:source:deploy -u kwb-prod \
   -d force-app/main/default \
-  --metadata LoadsmartPoller,SamsaraWebhookReceiver \
+  --metadata LoadsmartPoller,MotiveWebhookReceiver \
   --wait 30
 
 # Restore from backup (if needed)

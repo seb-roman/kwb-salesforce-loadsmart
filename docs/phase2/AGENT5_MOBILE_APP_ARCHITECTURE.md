@@ -54,7 +54,7 @@
 | **UI Framework** | React Native 0.71+ | Cross-platform mobile UI |
 | **State Management** | Redux Toolkit | Global state (loads, auth, sync status) |
 | **Navigation** | React Navigation | Screen navigation + deep linking |
-| **Local Storage** | Realm | Offline data cache (structured data) |
+| **Local Storage** | **Realm** | Offline data cache (structured data) |
 | **File Storage** | React Native File System | Photos, signatures, PDFs |
 | **Camera** | react-native-camera | Photo capture for POD |
 | **Signature** | react-native-signature-canvas | Signature capture |
@@ -80,6 +80,97 @@
 | **Android Studio** | Android build + deployment |
 | **Firebase CLI** | Firebase project management |
 | **EAS (Expo Application Services)** | Cloud builds for iOS/Android |
+
+---
+
+## Database Technology: Realm vs SQLite (Architectural Decision)
+
+### Why Realm Over SQLite?
+
+This architecture uses **Realm** (not SQLite) for offline data persistence. While both are valid embedded databases for React Native, Realm was specifically chosen for this logistics use case based on the following criteria:
+
+#### 1. **Type Safety & Schema Validation** ✅
+- **Realm:** Enforces strict TypeScript schemas at compile-time. All object properties are validated.
+- **SQLite:** Raw column types; data validation happens in application code.
+- **Impact for KWB:** Prevents data corruption when syncing POD photos, GPS coordinates, and timestamps. Type mismatch errors caught early, not in production.
+
+```typescript
+// Realm: Type-safe schema
+class Load extends Realm.Object<Load> {
+  id!: string;
+  loadName!: string;
+  pickupLatitude!: number;  // Must be number, always
+  timestamp!: Date;          // Must be ISO date, always
+}
+
+// SQLite: No type checking
+const result = db.query('SELECT * FROM load');
+// result.pickupLatitude could be string, number, null—no guarantee
+```
+
+#### 2. **Reactive Updates & Live Queries** ✅
+- **Realm:** Subscriptions to objects auto-notify listeners when data changes. Perfect for real-time sync status updates.
+- **SQLite:** Requires manual polling or observer pattern.
+- **Impact for KWB:** When the app syncs a POD to Salesforce, the UI automatically updates without explicit state dispatch. Reduces race conditions during offline → online transitions.
+
+```typescript
+// Realm: Reactive
+const loads = realm.objects('Load').filtered("status == 'ASSIGNED'");
+loads.addListener((obj, changes) => {
+  console.log('Loads changed:', changes.insertedIndices);
+  // UI automatically re-renders
+});
+
+// SQLite: Manual refresh needed
+db.query('SELECT * FROM load WHERE status = "ASSIGNED"');
+// Dev must manually call setLoads() dispatch to notify UI
+```
+
+#### 3. **Built-In Sync Capability** ✅
+- **Realm:** Realm Cloud Sync (optional) can sync data bi-directionally with backend.
+- **SQLite:** No native sync; must build custom sync layer.
+- **Impact for KWB:** Future enhancements (e.g., real-time load assignments) can leverage Realm Sync without architectural changes. Today, manual sync works; tomorrow, automatic sync is available.
+
+#### 4. **Offline Sync Queue Efficiency** ✅
+- **Realm:** Transactions are ACID-compliant. Batch operations (e.g., insert 100 PODs) are atomic.
+- **SQLite:** Transactions work, but Realm's performance is optimized for React Native (no cross-process overhead).
+- **Impact for KWB:** When driver goes offline and captures 5 PODs, all 5 are saved atomically. No partial data loss if app crashes during save.
+
+#### 5. **Better Performance for Complex Queries** ✅
+- **Realm:** Indexes are automatic on lookup fields. Queries on related objects (load → check-ins → PODs) are optimized.
+- **SQLite:** Indexes must be manually created; JOIN performance depends on query planning.
+- **Impact for KWB:** Querying "all PODs for this load in the last 2 hours" is consistently fast even with 1000+ PODs cached locally.
+
+#### 6. **Offline-First Sync Architecture** ✅
+- **Realm:** Transactions + reactive updates = ideal for the sync queue pattern used in this app.
+  - Queue operations atomically
+  - Retry failed operations
+  - Notify UI of sync progress in real-time
+- **SQLite:** Possible but requires more custom code.
+
+### Trade-offs Acknowledged
+
+| Aspect | Realm | SQLite |
+|--------|-------|--------|
+| **Learning Curve** | Steeper (new API) | Flatter (familiar SQL) |
+| **App Bundle Size** | +2.5 MB | +1 MB |
+| **Ecosystem** | Growing, newer | Mature, battle-tested |
+| **Cross-Platform Support** | Excellent (iOS, Android, Web) | Excellent (iOS, Android, web) |
+
+**Decision:** The 1.5 MB size increase is acceptable for the benefits of type safety, reactive updates, and built-in sync. Offline logistics is the #1 feature for KWB drivers; Realm is optimized for this use case.
+
+### Implementation Notes
+
+1. **Realm is imported in `src/database/realm.ts`** — single initialization point.
+2. **All schemas defined in `src/database/schemas/`** — TypeScript-first.
+3. **Realm queries wrapped in `src/database/queries/`** — abstraction layer.
+4. **Sync queue uses Realm transactions** — atomic, no partial states.
+5. **No hardcoded SQLite references** — all local DB references use Realm interface.
+
+### Future Considerations
+
+- **Realm Sync (Phase 3+):** If real-time sync becomes a requirement, Realm Cloud Sync can be enabled with minimal code changes.
+- **Encryption:** Realm supports at-rest encryption; can be enabled via `encryptionKey` in realm config if PII encryption is mandated.
 
 ---
 

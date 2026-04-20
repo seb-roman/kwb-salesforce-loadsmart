@@ -26,7 +26,7 @@ Load__c Object (54 fields):
   ├── Pickup Details (6) — Company, Country, Phone, Contact, Confirmation, Actual time
   ├── Delivery Details (6) — Company, Country, Phone, Contact, Confirmation, Actual time
   ├── Documents (2) — Rate_Confirmation_PDF, BOL_PDF
-  ├── Audit & Legacy (5) — Created/Modified timestamps, users, Alvys_Load_Number
+  ├── Audit & Legacy (5) — Created/Modified timestamps, users, Legacy_Load_ID
   ├── Tracking & Exceptions (3) — Record_Source, Is_Exception, Status_Reason
   ├── Hazmat & Special (2) — Hazmat_Class, UN_Number
   ├── Rate Components (4) — Fuel_Surcharge, Accessorials, Carrier_Fuel_Surcharge, Distance_Miles
@@ -118,12 +118,12 @@ Is_Late__c = IF(AND(NOT(ISNULL(Delivery_Window_Actual_Begin__c)), Delivery_Actua
 - `Modified_DateTime__c` — Auto-updated on record change
 - `Created_By__c` — Lookup to User (manual or flow)
 - `Modified_By__c` — Lookup to User (manual or flow)
-- `Record_Source__c` — Picklist (Loadsmart / Alvys / Manual / EDI)
+- `Record_Source__c` — Picklist (Loadsmart / Data Loader / Manual / EDI)
 
 ### External IDs (for integration)
 ```
 Load__c.Loadsmart_Shipment_ID__c (existing) → API key
-Load__c.Alvys_Load_Number__c → Legacy reference
+Load__c.Legacy_Load_ID__c → Data Loader migration reference
 Driver__c.License_Number__c → Unique per driver
 Driver__c.DOT_Number__c → FMCSA ID
 Equipment__c.Unit_Number__c → Unique per carrier

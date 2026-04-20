@@ -17,9 +17,9 @@
                 <label>Loadsmart API</label>
             </value>
             <value>
-                <fullName>Alvys</fullName>
+                <fullName>Data_Loader</fullName>
                 <default>false</default>
-                <label>Alvys (Legacy)</label>
+                <label>Data Loader (Migration)</label>
             </value>
             <value>
                 <fullName>Manual</fullName>

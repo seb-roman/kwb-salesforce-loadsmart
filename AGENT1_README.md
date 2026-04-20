@@ -211,7 +211,7 @@ All use ISNULL guards for safety:
 
 ### External IDs (for Loadsmart sync)
 - `Load__c.Loadsmart_Shipment_ID__c` — Unique API key
-- `Load__c.Alvys_Load_Number__c` — Legacy migration
+- `Load__c.Legacy_Load_ID__c` — Data Loader migration
 - `Driver__c.License_Number__c` — Unique per driver
 - `Driver__c.DOT_Number__c` — FMCSA ID
 - `Equipment__c.Unit_Number__c` — Unique per carrier
@@ -220,7 +220,7 @@ All use ISNULL guards for safety:
 ### Audit Fields (all objects)
 - `Created_DateTime__c` / `Modified_DateTime__c` — Auto-tracked
 - `Created_By__c` / `Modified_By__c` — User references
-- `Record_Source__c` — Loadsmart / Alvys / Manual / EDI
+- `Record_Source__c` — Loadsmart / Data Loader / Manual / EDI
 
 ---
 

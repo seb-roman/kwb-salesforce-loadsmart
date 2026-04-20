@@ -2,7 +2,7 @@
 
 **Status:** Phase 1 Complete ✅ | Phase 2 Complete (Ready for UAT) ✅
 
-A custom Salesforce-based Transportation Management System (TMS) for KWB Logistics, replacing legacy Alvys platform with native Salesforce automation, real-time tracking, and operational intelligence.
+A custom Salesforce-based Transportation Management System (TMS) for KWB Logistics, replacing legacy TMS platform with native Salesforce automation, real-time tracking, and operational intelligence.
 
 ---
 

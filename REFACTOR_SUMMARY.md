@@ -8,7 +8,7 @@
 
 ## Overview
 
-Refactored the KWB Loadsmart/Alvys Salesforce integration to address two critical security and maintainability improvements:
+Refactored the KWB Loadsmart Salesforce integration to address two critical security and maintainability improvements:
 
 1. ✅ **Replaced hardcoded credentials with Salesforce Named Credentials**
 2. ✅ **Introduced Data Transfer Objects (DTOs) for proper API response mapping**
