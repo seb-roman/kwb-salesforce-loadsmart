@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rate_Type__c</fullName>
+    <description>Flat rate ($2000 per load) or Per-mile rate ($1.50/mi)</description>
+    <label>Rate Type</label>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Flat_Rate</fullName><default>true</default><label>Flat Rate</label></value>
+            <value><fullName>Per_Mile</fullName><default>false</default><label>Per Mile</label></value>
+            <value><fullName>Minimum_Charge</fullName><default>false</default><label>Minimum Charge</label></value>
+        </valueSetDefinition>
+    </valueSet>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+</CustomField>

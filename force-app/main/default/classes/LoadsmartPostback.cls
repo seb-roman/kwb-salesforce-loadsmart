@@ -39,7 +39,7 @@ public with sharing class LoadsmartPostback {
                 Loadsmart_Shipment_ID__c,
                 Carrier__r.Name,
                 Carrier__r.MC_Number__c,
-                Carrier__r.USDOT_Number__c,
+                Carrier__r.DOT_Number__c,
                 Carrier_Rate__c,
                 Pickup_Window_Begin__c,
                 Delivery_Window_Begin__c,
@@ -69,7 +69,7 @@ public with sharing class LoadsmartPostback {
                 Map<String, String> carrierData = new Map<String, String>{
                     'name' => load.Carrier__r.Name,
                     'mc_number' => load.Carrier__r.MC_Number__c,
-                    'dot_number' => load.Carrier__r.USDOT_Number__c
+                    'dot_number' => load.Carrier__r.DOT_Number__c
                 };
                 payload.put('carrier', carrierData);
             }

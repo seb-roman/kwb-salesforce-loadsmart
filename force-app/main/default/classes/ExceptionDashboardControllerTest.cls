@@ -149,7 +149,7 @@ public with sharing class ExceptionDashboardControllerTest {
     @isTest
     static void testAcknowledgeException() {
         // Setup
-        Exception__c exception = createTestException(
+        Exception__c exc = createTestException(
             createTestLoad('LOAD-ACK-001').Id, 
             'Alert', 
             'LATE_ARRIVAL', 
@@ -158,11 +158,11 @@ public with sharing class ExceptionDashboardControllerTest {
         
         // Execute
         Test.startTest();
-        ExceptionDashboardController.acknowledgeException(exception.Id);
+        ExceptionDashboardController.acknowledgeException(exc.Id);
         Test.stopTest();
         
         // Verify
-        Exception__c updated = [SELECT Id, Status__c, Acknowledged_DateTime__c FROM Exception__c WHERE Id = :exception.Id];
+        Exception__c updated = [SELECT Id, Status__c, Acknowledged_DateTime__c FROM Exception__c WHERE Id = :exc.Id];
         System.assertEquals('Acknowledged', updated.Status__c);
         System.assert(updated.Acknowledged_DateTime__c != null);
     }
@@ -174,7 +174,7 @@ public with sharing class ExceptionDashboardControllerTest {
     @isTest
     static void testResolveException() {
         // Setup
-        Exception__c exception = createTestException(
+        Exception__c exc = createTestException(
             createTestLoad('LOAD-RES-001').Id, 
             'Alert', 
             'LONG_IDLE', 
@@ -184,11 +184,11 @@ public with sharing class ExceptionDashboardControllerTest {
         
         // Execute
         Test.startTest();
-        ExceptionDashboardController.resolveException(exception.Id, reason);
+        ExceptionDashboardController.resolveException(exc.Id, reason);
         Test.stopTest();
         
         // Verify
-        Exception__c updated = [SELECT Id, Status__c, Resolved_DateTime__c, Notes__c FROM Exception__c WHERE Id = :exception.Id];
+        Exception__c updated = [SELECT Id, Status__c, Resolved_DateTime__c, Notes__c FROM Exception__c WHERE Id = :exc.Id];
         System.assertEquals('Resolved', updated.Status__c);
         System.assert(updated.Resolved_DateTime__c != null);
         System.assertEquals(reason, updated.Notes__c);
@@ -295,7 +295,7 @@ public with sharing class ExceptionDashboardControllerTest {
     static void testExceptionItemDisplayProperties() {
         // Setup
         Load__c load = createTestLoad('LOAD-DISPLAY-001');
-        Exception__c exception = createTestException(load.Id, 'Alert', 'LATE_ARRIVAL', 'Open');
+        Exception__c exc = createTestException(load.Id, 'Alert', 'LATE_ARRIVAL', 'Open');
         
         // Execute
         Test.startTest();
@@ -325,7 +325,7 @@ public with sharing class ExceptionDashboardControllerTest {
     }
     
     private static Exception__c createTestException(Id loadId, String severity, String exceptionType, String status) {
-        Exception__c exception = new Exception__c(
+        Exception__c exc = new Exception__c(
             Load__c = loadId,
             Exception_Type__c = exceptionType,
             Severity__c = severity,
@@ -356,7 +356,7 @@ public with sharing class ExceptionDashboardControllerTest {
     }
     
     private static void createExceptionAtTime(Id loadId, DateTime triggeredTime) {
-        Exception__c exception = new Exception__c(
+        Exception__c exc = new Exception__c(
             Load__c = loadId,
             Exception_Type__c = 'LATE_ARRIVAL',
             Severity__c = 'Alert',

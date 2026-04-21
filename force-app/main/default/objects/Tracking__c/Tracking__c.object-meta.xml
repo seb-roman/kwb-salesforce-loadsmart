@@ -22,5 +22,5 @@
         <description>Master record type for all tracking events</description>
         <label>Master</label>
     </recordTypes>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

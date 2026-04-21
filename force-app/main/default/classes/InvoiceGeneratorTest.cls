@@ -26,7 +26,7 @@ private class InvoiceGeneratorTest {
         Account shipper = [SELECT Id FROM Account LIMIT 1];
         Load__c load = new Load__c();
         load.Name = 'Test Load 1';
-        load.Shipper_Account__c = shipper.Id;
+        load.Shipper__c = shipper.Id;
         load.Shipper_Rate__c = 1500;
         load.Fuel_Surcharge__c = 250;
         load.Distance_Miles__c = 500;
@@ -51,7 +51,7 @@ private class InvoiceGeneratorTest {
         Account shipper = [SELECT Id FROM Account LIMIT 1];
         Load__c load = new Load__c();
         load.Name = 'Test Load with Fuel';
-        load.Shipper_Account__c = shipper.Id;
+        load.Shipper__c = shipper.Id;
         load.Shipper_Rate__c = 2000;
         load.Fuel_Surcharge__c = 500;
         load.BOL_Number__c = 'BOL-FUEL-001';
@@ -80,7 +80,7 @@ private class InvoiceGeneratorTest {
         Account shipper = [SELECT Id FROM Account LIMIT 1];
         Load__c load = new Load__c();
         load.Name = 'Test Load Duplicate';
-        load.Shipper_Account__c = shipper.Id;
+        load.Shipper__c = shipper.Id;
         load.Shipper_Rate__c = 1000;
         load.BOL_Number__c = 'BOL-DUP-001';
         load.POD_Captured__c = false;
@@ -109,7 +109,7 @@ private class InvoiceGeneratorTest {
         Account shipper = [SELECT Id FROM Account LIMIT 1];
         Load__c load = new Load__c();
         load.Name = 'Test Load No BOL';
-        load.Shipper_Account__c = shipper.Id;
+        load.Shipper__c = shipper.Id;
         load.Shipper_Rate__c = 1500;
         // BOL_Number__c is blank
         load.POD_Captured__c = false;
@@ -130,7 +130,7 @@ private class InvoiceGeneratorTest {
         Account shipper = [SELECT Id FROM Account LIMIT 1];
         Load__c load = new Load__c();
         load.Name = 'Test Load No POD';
-        load.Shipper_Account__c = shipper.Id;
+        load.Shipper__c = shipper.Id;
         load.Shipper_Rate__c = 1500;
         load.BOL_Number__c = 'BOL-NOPOD-001';
         load.POD_Captured__c = false;
@@ -150,7 +150,7 @@ private class InvoiceGeneratorTest {
         Account shipper = [SELECT Id FROM Account LIMIT 1];
         Load__c load = new Load__c();
         load.Name = 'Test Load Calculation';
-        load.Shipper_Account__c = shipper.Id;
+        load.Shipper__c = shipper.Id;
         load.Shipper_Rate__c = 1234.56;
         load.Fuel_Surcharge__c = 78.90;
         load.BOL_Number__c = 'BOL-CALC-001';
@@ -179,7 +179,7 @@ private class InvoiceGeneratorTest {
         for (Integer i = 0; i < 5; i++) {
             Load__c load = new Load__c();
             load.Name = 'Test Load ' + i;
-            load.Shipper_Account__c = shipper.Id;
+            load.Shipper__c = shipper.Id;
             load.Shipper_Rate__c = 1000 + i;
             load.BOL_Number__c = 'BOL-' + i;
             load.POD_Captured__c = false;
@@ -210,7 +210,7 @@ private class InvoiceGeneratorTest {
         Account shipper = [SELECT Id FROM Account LIMIT 1];
         Load__c load = new Load__c();
         load.Name = 'Test Load Status';
-        load.Shipper_Account__c = shipper.Id;
+        load.Shipper__c = shipper.Id;
         load.Shipper_Rate__c = 1000;
         load.BOL_Number__c = 'BOL-STATUS-001';
         load.POD_Captured__c = false;
@@ -252,7 +252,7 @@ private class InvoiceGeneratorTest {
         Account shipper = [SELECT Id FROM Account LIMIT 1];
         Load__c load = new Load__c();
         load.Name = 'Test Load Zero Rate';
-        load.Shipper_Account__c = shipper.Id;
+        load.Shipper__c = shipper.Id;
         load.Shipper_Rate__c = 0;
         load.BOL_Number__c = 'BOL-ZERO-001';
         load.POD_Captured__c = false;
@@ -276,7 +276,7 @@ private class InvoiceGeneratorTest {
         for (Integer i = 0; i < 50; i++) {
             Load__c load = new Load__c();
             load.Name = 'Bulk Load ' + i;
-            load.Shipper_Account__c = shipper.Id;
+            load.Shipper__c = shipper.Id;
             load.Shipper_Rate__c = 1000 + (i * 10);
             load.BOL_Number__c = 'BOL-BULK-' + i;
             load.POD_Captured__c = false;

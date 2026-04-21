@@ -110,7 +110,7 @@ public class InvoiceGenerator {
     private static Boolean isEligibleForInvoiceGeneration(Load__c load) {
         return load.POD_Captured__c == true
             && String.isNotBlank(load.BOL_Number__c)
-            && load.Shipper_Account__c != null
+            && load.Shipper__c != null
             && load.Shipper_Rate__c != null
             && load.Shipper_Rate__c > 0;
     }
@@ -145,7 +145,7 @@ public class InvoiceGenerator {
     private static Invoice__c createInvoiceRecord(Load__c load) {
         Invoice__c invoice = new Invoice__c();
         
-        invoice.Shipper_Account__c = load.Shipper_Account__c;
+        invoice.Shipper_Account__c = load.Shipper__c;
         invoice.Load__c = load.Id;
         invoice.Invoice_Date__c = Date.today();
         invoice.Status__c = 'Draft'; // Never auto-send

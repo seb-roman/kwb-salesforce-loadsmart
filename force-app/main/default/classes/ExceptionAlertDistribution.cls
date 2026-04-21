@@ -49,20 +49,20 @@ public without sharing class ExceptionAlertDistribution {
         List<AlertMessage> slackAlerts = new List<AlertMessage>();
         List<AlertMessage> smsAlerts = new List<AlertMessage>();
         
-        for (Exception__c exception : exceptions) {
-            Load__c load = loadMap.get(exception.Load__c);
+        for (Exception__c exc : exceptions) {
+            Load__c load = loadMap.get(exc.Load__c);
             if (load == null) {
                 continue;
             }
             
             // Route based on severity
-            Boolean isCritical = exception.Severity__c == SEVERITY_CRITICAL;
-            Boolean isAlert = exception.Severity__c == SEVERITY_ALERT;
-            Boolean isWarning = exception.Severity__c == SEVERITY_WARNING;
+            Boolean isCritical = exc.Severity__c == SEVERITY_CRITICAL;
+            Boolean isAlert = exc.Severity__c == SEVERITY_ALERT;
+            Boolean isWarning = exc.Severity__c == SEVERITY_WARNING;
             
             // Email: all severities
             if (load.Broker_Rep__c != null || load.Dispatcher__c != null) {
-                AlertMessage emailAlert = buildEmailAlert(exception, load);
+                AlertMessage emailAlert = buildEmailAlert(exc, load);
                 if (emailAlert != null) {
                     emailAlerts.add(emailAlert);
                 }
@@ -70,7 +70,7 @@ public without sharing class ExceptionAlertDistribution {
             
             // Slack: critical only
             if (isCritical && hasSlackConfig()) {
-                AlertMessage slackAlert = buildSlackAlert(exception, load);
+                AlertMessage slackAlert = buildSlackAlert(exc, load);
                 if (slackAlert != null) {
                     slackAlerts.add(slackAlert);
                 }
@@ -78,7 +78,7 @@ public without sharing class ExceptionAlertDistribution {
             
             // SMS: critical only, phone opt-in required
             if (isCritical && hasPhoneOptIn(load)) {
-                AlertMessage smsAlert = buildSMSAlert(exception, load);
+                AlertMessage smsAlert = buildSMSAlert(exc, load);
                 if (smsAlert != null) {
                     smsAlerts.add(smsAlert);
                 }
@@ -102,9 +102,9 @@ public without sharing class ExceptionAlertDistribution {
     /**
      * Build email alert message
      */
-    private static AlertMessage buildEmailAlert(Exception__c exception, Load__c load) {
+    private static AlertMessage buildEmailAlert(Exception__c exc, Load__c load) {
         AlertMessage alert = new AlertMessage();
-        alert.exceptionId = exception.Id;
+        alert.exceptionId = exc.Id;
         alert.loadId = load.Id;
         alert.recipients = new List<String>();
         
@@ -126,9 +126,9 @@ public without sharing class ExceptionAlertDistribution {
     /**
      * Build Slack alert message
      */
-    private static AlertMessage buildSlackAlert(Exception__c exception, Load__c load) {
+    private static AlertMessage buildSlackAlert(Exception__c exc, Load__c load) {
         AlertMessage alert = new AlertMessage();
-        alert.exceptionId = exception.Id;
+        alert.exceptionId = exc.Id;
         alert.loadId = load.Id;
         alert.channel = 'SLACK';
         alert.slackChannel = getOpsSlackChannel(); // Get from settings
@@ -140,9 +140,9 @@ public without sharing class ExceptionAlertDistribution {
     /**
      * Build SMS alert message
      */
-    private static AlertMessage buildSMSAlert(Exception__c exception, Load__c load) {
+    private static AlertMessage buildSMSAlert(Exception__c exc, Load__c load) {
         AlertMessage alert = new AlertMessage();
-        alert.exceptionId = exception.Id;
+        alert.exceptionId = exc.Id;
         alert.loadId = load.Id;
         alert.channel = 'SMS';
         alert.smsNumber = load.Driver__r?.Phone; // Get from driver
@@ -154,9 +154,9 @@ public without sharing class ExceptionAlertDistribution {
     /**
      * Build email subject
      */
-    private static String buildEmailSubject(Exception__c exception, Load__c load) {
-        String severity = exception.Severity__c;
-        String exceptionType = exception.Exception_Type__c;
+    private static String buildEmailSubject(Exception__c exc, Load__c load) {
+        String severity = exc.Severity__c;
+        String exceptionType = exc.Exception_Type__c;
         
         return '[' + severity.toUpperCase() + '] ' + exceptionType + ' - Load ' + load.Name;
     }
@@ -164,16 +164,16 @@ public without sharing class ExceptionAlertDistribution {
     /**
      * Build email body
      */
-    private static String buildEmailBody(Exception__c exception, Load__c load) {
+    private static String buildEmailBody(Exception__c exc, Load__c load) {
         String body = 'An exception has been triggered on load tracking.\n\n';
         body += 'Load: ' + load.Name + '\n';
-        body += 'Severity: ' + exception.Severity__c + '\n';
-        body += 'Exception Type: ' + exception.Exception_Type__c + '\n';
-        body += 'Description: ' + exception.Description__c + '\n';
-        body += 'Triggered: ' + exception.Triggered_DateTime__c.format('yyyy-MM-dd HH:mm:ss') + '\n\n';
-        body += 'Status: ' + exception.Status__c + '\n';
+        body += 'Severity: ' + exc.Severity__c + '\n';
+        body += 'Exception Type: ' + exc.Exception_Type__c + '\n';
+        body += 'Description: ' + exc.Description__c + '\n';
+        body += 'Triggered: ' + exc.Triggered_DateTime__c.format('yyyy-MM-dd HH:mm:ss') + '\n\n';
+        body += 'Status: ' + exc.Status__c + '\n';
         body += 'Load Details: https://[salesforce-instance].salesforce.com/' + load.Id + '\n';
-        body += 'Exception Details: https://[salesforce-instance].salesforce.com/' + exception.Id + '\n';
+        body += 'Exception Details: https://[salesforce-instance].salesforce.com/' + exc.Id + '\n';
         
         return body;
     }
@@ -181,12 +181,12 @@ public without sharing class ExceptionAlertDistribution {
     /**
      * Build Slack message
      */
-    private static String buildSlackMessage(Exception__c exception, Load__c load) {
+    private static String buildSlackMessage(Exception__c exc, Load__c load) {
         String message = ':warning: *Critical Exception*\n';
         message += '*Load:* ' + load.Name + '\n';
-        message += '*Type:* ' + exception.Exception_Type__c + '\n';
-        message += '*Description:* ' + exception.Description__c + '\n';
-        message += '*Time:* ' + exception.Triggered_DateTime__c.format('yyyy-MM-dd HH:mm:ss') + '\n';
+        message += '*Type:* ' + exc.Exception_Type__c + '\n';
+        message += '*Description:* ' + exc.Description__c + '\n';
+        message += '*Time:* ' + exc.Triggered_DateTime__c.format('yyyy-MM-dd HH:mm:ss') + '\n';
         
         return message;
     }
@@ -194,9 +194,9 @@ public without sharing class ExceptionAlertDistribution {
     /**
      * Build SMS message
      */
-    private static String buildSMSMessage(Exception__c exception, Load__c load) {
-        return 'ALERT: Load ' + load.Name + ' - ' + exception.Exception_Type__c + 
-               ' at ' + exception.Triggered_DateTime__c.format('HH:mm:ss');
+    private static String buildSMSMessage(Exception__c exc, Load__c load) {
+        return 'ALERT: Load ' + load.Name + ' - ' + exc.Exception_Type__c + 
+               ' at ' + exc.Triggered_DateTime__c.format('HH:mm:ss');
     }
     
     /**

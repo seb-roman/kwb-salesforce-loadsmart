@@ -4,29 +4,16 @@
     <description>Severity level: LOW, MEDIUM, HIGH, CRITICAL</description>
     <externalId>false</externalId>
     <label>Severity</label>
-    <picklist>
-        <picklistValues>
-            <fullName>LOW</fullName>
-            <default>false</default>
-            <label>LOW</label>
-        </picklistValues>
-        <picklistValues>
-            <fullName>MEDIUM</fullName>
-            <default>false</default>
-            <label>MEDIUM</label>
-        </picklistValues>
-        <picklistValues>
-            <fullName>HIGH</fullName>
-            <default>false</default>
-            <label>HIGH</label>
-        </picklistValues>
-        <picklistValues>
-            <fullName>CRITICAL</fullName>
-            <default>false</default>
-            <label>CRITICAL</label>
-        </picklistValues>
-        <sorted>false</sorted>
-    </picklist>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>LOW</fullName><default>false</default><label>LOW</label></value>
+            <value><fullName>MEDIUM</fullName><default>false</default><label>MEDIUM</label></value>
+            <value><fullName>HIGH</fullName><default>false</default><label>HIGH</label></value>
+            <value><fullName>CRITICAL</fullName><default>false</default><label>CRITICAL</label></value>
+        </valueSetDefinition>
+    </valueSet>
     <required>true</required>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>

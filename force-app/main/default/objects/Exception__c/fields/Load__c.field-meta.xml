@@ -7,7 +7,6 @@
     <referenceTo>Load__c</referenceTo>
     <relationshipLabel>Exceptions</relationshipLabel>
     <relationshipName>Exceptions</relationshipName>
-    <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>

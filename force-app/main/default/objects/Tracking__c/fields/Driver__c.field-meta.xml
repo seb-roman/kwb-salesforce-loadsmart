@@ -7,7 +7,6 @@
     <referenceTo>Driver__c</referenceTo>
     <relationshipLabel>Tracking Records</relationshipLabel>
     <relationshipName>TrackingByDriver</relationshipName>
-    <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>

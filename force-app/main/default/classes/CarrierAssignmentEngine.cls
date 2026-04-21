@@ -117,11 +117,7 @@ public with sharing class CarrierAssignmentEngine {
             }
             
             // Sort by final score descending
-            viableCarriers.sort((a, b) => {
-                if (a.finalScore > b.finalScore) return -1;
-                if (a.finalScore < b.finalScore) return 1;
-                return 0;
-            });
+            viableCarriers.sort(new CarrierScoreComparator());
             
             // Populate top 3
             if (!viableCarriers.isEmpty()) {
@@ -703,4 +699,15 @@ public with sharing class CarrierAssignmentEngine {
         Decimal score;
         String reason;
     }
+    /**
+     * Comparator for sorting CarrierScoreInfo by finalScore descending
+     */
+    private class CarrierScoreComparator implements Comparator<CarrierScoreInfo> {
+        public Integer compare(CarrierScoreInfo a, CarrierScoreInfo b) {
+            if (a.finalScore > b.finalScore) return -1;
+            if (a.finalScore < b.finalScore) return 1;
+            return 0;
+        }
+    }
+
 }

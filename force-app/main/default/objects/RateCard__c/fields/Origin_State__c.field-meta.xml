@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Origin_State__c</fullName>
+    <description>Origin state for rate (e.g., OH). Leave blank for default rate.</description>
+    <label>Origin State</label>
+    <length>2</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Text</type>
+</CustomField>

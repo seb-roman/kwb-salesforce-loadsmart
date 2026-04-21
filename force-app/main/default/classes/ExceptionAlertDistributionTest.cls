@@ -20,61 +20,61 @@ public with sharing class ExceptionAlertDistributionTest {
     
     /**
      * Test 1: Email Alert for Warning
-     * Scenario: Warning exception creates email alert
+     * Scenario: Warning exc creates email alert
      */
     @isTest
     static void testEmailAlertForWarning() {
         // Setup
         Load__c load = createTestLoadWithContacts('LOAD-W001', true, false);
-        Exception__c exception = createTestException(load.Id, 'LATE_ARRIVAL', 'Warning');
+        Exception__c exc = createTestException(load.Id, 'LATE_ARRIVAL', 'Warning');
         
         // Execute
         Test.startTest();
-        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exception });
+        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exc });
         Test.stopTest();
         
         // Verify email was queued
-        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exception.Id]);
+        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exc.Id]);
     }
     
     /**
      * Test 2: Email + Slack for Critical
-     * Scenario: Critical exception routes to email and Slack
+     * Scenario: Critical exc routes to email and Slack
      */
     @isTest
     static void testCriticalAlertRouting() {
         // Setup
         Load__c load = createTestLoadWithContacts('LOAD-C001', true, false);
-        Exception__c exception = createTestException(load.Id, 'DRIVER_OFFLINE', 'Critical');
+        Exception__c exc = createTestException(load.Id, 'DRIVER_OFFLINE', 'Critical');
         
         // Execute
         Test.startTest();
-        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exception });
+        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exc });
         Test.stopTest();
         
-        // Verify exception created
-        List<Exception__c> exceptions = [SELECT Id, Severity__c FROM Exception__c WHERE Id = :exception.Id];
+        // Verify exc created
+        List<Exception__c> exceptions = [SELECT Id, Severity__c FROM Exception__c WHERE Id = :exc.Id];
         System.assertEquals(1, exceptions.size());
         System.assertEquals('Critical', exceptions[0].Severity__c);
     }
     
     /**
      * Test 3: SMS for Critical with Phone Opt-In
-     * Scenario: Critical exception with driver phone sends SMS
+     * Scenario: Critical exc with driver phone sends SMS
      */
     @isTest
     static void testSMSAlertWithPhoneOptIn() {
         // Setup
         Load__c load = createTestLoadWithContacts('LOAD-C002', true, true);
-        Exception__c exception = createTestException(load.Id, 'EQUIPMENT_BREAKDOWN', 'Critical');
+        Exception__c exc = createTestException(load.Id, 'EQUIPMENT_BREAKDOWN', 'Critical');
         
         // Execute
         Test.startTest();
-        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exception });
+        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exc });
         Test.stopTest();
         
-        // Verify exception created
-        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exception.Id]);
+        // Verify exc created
+        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exc.Id]);
     }
     
     /**
@@ -85,15 +85,15 @@ public with sharing class ExceptionAlertDistributionTest {
     static void testNoSlackWithoutConfig() {
         // Setup
         Load__c load = createTestLoadWithContacts('LOAD-C003', true, false);
-        Exception__c exception = createTestException(load.Id, 'GEOFENCE_VIOLATION', 'Critical');
+        Exception__c exc = createTestException(load.Id, 'GEOFENCE_VIOLATION', 'Critical');
         
         // Execute
         Test.startTest();
-        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exception });
+        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exc });
         Test.stopTest();
         
         // Verify no errors thrown
-        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exception.Id]);
+        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exc.Id]);
     }
     
     /**
@@ -104,15 +104,15 @@ public with sharing class ExceptionAlertDistributionTest {
     static void testNoSMSWithoutPhone() {
         // Setup
         Load__c load = createTestLoadWithContacts('LOAD-C004', true, false); // false = no phone
-        Exception__c exception = createTestException(load.Id, 'MISSED_PICKUP', 'Critical');
+        Exception__c exc = createTestException(load.Id, 'MISSED_PICKUP', 'Critical');
         
         // Execute
         Test.startTest();
-        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exception });
+        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exc });
         Test.stopTest();
         
-        // Verify exception created but no SMS sent
-        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exception.Id]);
+        // Verify exc created but no SMS sent
+        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exc.Id]);
     }
     
     /**
@@ -123,7 +123,7 @@ public with sharing class ExceptionAlertDistributionTest {
     static void testAlertMessageFormatting() {
         // Setup
         Load__c load = createTestLoadWithContacts('LOAD-MSG001', true, false);
-        Exception__c exception = new Exception__c(
+        Exception__c exc = new Exception__c(
             Load__c = load.Id,
             Exception_Type__c = 'LONG_IDLE',
             Severity__c = 'Alert',
@@ -131,18 +131,18 @@ public with sharing class ExceptionAlertDistributionTest {
             Triggered_DateTime__c = System.now(),
             Status__c = 'Open'
         );
-        insert exception;
+        insert exc;
         
         // Execute
         Test.startTest();
-        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exception });
+        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exc });
         Test.stopTest();
         
-        // Verify exception details
+        // Verify exc details
         List<Exception__c> exceptions = [
             SELECT Id, Description__c, Triggered_DateTime__c 
             FROM Exception__c 
-            WHERE Id = :exception.Id
+            WHERE Id = :exc.Id
         ];
         System.assertEquals(1, exceptions.size());
         System.assert(String.isNotBlank(exceptions[0].Description__c));
@@ -162,15 +162,15 @@ public with sharing class ExceptionAlertDistributionTest {
         );
         insert load;
         
-        Exception__c exception = createTestException(load.Id, 'DRIVER_OFFLINE', 'Warning');
+        Exception__c exc = createTestException(load.Id, 'DRIVER_OFFLINE', 'Warning');
         
         // Execute
         Test.startTest();
-        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exception });
+        ExceptionAlertDistribution.processAlerts(new List<Exception__c> { exc });
         Test.stopTest();
         
         // Verify no errors
-        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exception.Id]);
+        System.assertEquals(1, [SELECT COUNT() FROM Exception__c WHERE Id = :exc.Id]);
     }
     
     /**
@@ -274,15 +274,15 @@ public with sharing class ExceptionAlertDistributionTest {
     }
     
     private static Exception__c createTestException(Id loadId, String exceptionType, String severity) {
-        Exception__c exception = new Exception__c(
+        Exception__c exc = new Exception__c(
             Load__c = loadId,
             Exception_Type__c = exceptionType,
             Severity__c = severity,
-            Description__c = 'Test exception: ' + exceptionType,
+            Description__c = 'Test exc: ' + exceptionType,
             Triggered_DateTime__c = System.now(),
             Status__c = 'Open'
         );
-        insert exception;
-        return exception;
+        insert exc;
+        return exc;
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Shipper_Account__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>Reference to the shipper Account record</description>
+    <inlineHelpText>Shipper that will be billed for this load</inlineHelpText>
+    <label>Shipper Account</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Invoices</relationshipLabel>
+    <relationshipName>Invoices</relationshipName>
+    <required>true</required>
+    <type>Lookup</type>
+</CustomField>

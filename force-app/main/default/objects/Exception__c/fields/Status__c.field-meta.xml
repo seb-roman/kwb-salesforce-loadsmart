@@ -4,34 +4,17 @@
     <description>Current status of the exception (triggered, acknowledged, investigating, resolved, closed)</description>
     <externalId>false</externalId>
     <label>Status</label>
-    <picklist>
-        <picklistValues>
-            <fullName>triggered</fullName>
-            <default>true</default>
-            <label>Triggered</label>
-        </picklistValues>
-        <picklistValues>
-            <fullName>acknowledged</fullName>
-            <default>false</default>
-            <label>Acknowledged</label>
-        </picklistValues>
-        <picklistValues>
-            <fullName>investigating</fullName>
-            <default>false</default>
-            <label>Investigating</label>
-        </picklistValues>
-        <picklistValues>
-            <fullName>resolved</fullName>
-            <default>false</default>
-            <label>Resolved</label>
-        </picklistValues>
-        <picklistValues>
-            <fullName>closed</fullName>
-            <default>false</default>
-            <label>Closed</label>
-        </picklistValues>
-        <sorted>false</sorted>
-    </picklist>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>triggered</fullName><default>true</default><label>Triggered</label></value>
+            <value><fullName>acknowledged</fullName><default>false</default><label>Acknowledged</label></value>
+            <value><fullName>investigating</fullName><default>false</default><label>Investigating</label></value>
+            <value><fullName>resolved</fullName><default>false</default><label>Resolved</label></value>
+            <value><fullName>closed</fullName><default>false</default><label>Closed</label></value>
+        </valueSetDefinition>
+    </valueSet>
     <required>true</required>
     <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>

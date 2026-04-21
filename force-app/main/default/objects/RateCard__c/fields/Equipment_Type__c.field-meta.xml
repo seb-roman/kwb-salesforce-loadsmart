@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Equipment_Type__c</fullName>
+    <description>Equipment type (FTL_Flatbed, FTL_Van, LTL, Reefer, etc.)</description>
+    <label>Equipment Type</label>
+    <valueSet>
+        <restricted>false</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>FTL_Flatbed</fullName><default>false</default><label>FTL Flatbed</label></value>
+            <value><fullName>FTL_Van</fullName><default>false</default><label>FTL Van</label></value>
+            <value><fullName>FTL_Reefer</fullName><default>false</default><label>FTL Reefer</label></value>
+            <value><fullName>LTL</fullName><default>false</default><label>LTL</label></value>
+            <value><fullName>Drayage</fullName><default>false</default><label>Drayage</label></value>
+            <value><fullName>Specialized</fullName><default>false</default><label>Specialized</label></value>
+        </valueSetDefinition>
+    </valueSet>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <type>Picklist</type>
+</CustomField>

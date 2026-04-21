@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Carrier__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>Reference to Carrier account being settled</description>
+    <label>Carrier</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Settlements</relationshipLabel>
+    <relationshipName>Settlements</relationshipName>
+    <required>true</required>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>

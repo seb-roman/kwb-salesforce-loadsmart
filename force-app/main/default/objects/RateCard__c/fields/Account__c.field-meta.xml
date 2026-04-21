@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account__c</fullName>
+    <description>Shipper or Carrier account for this rate card</description>
+    <label>Account</label>
+    <referenceTo>Account</referenceTo>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <relationshipLabel>Rate Cards</relationshipLabel>
+    <relationshipName>RateCards</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <type>Lookup</type>
+</CustomField>

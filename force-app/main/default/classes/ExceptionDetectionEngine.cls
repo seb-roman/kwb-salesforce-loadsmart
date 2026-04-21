@@ -91,7 +91,7 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
                     continue; // Skip inactive rules
                 }
                 
-                Exception__c exception = checkRule(rule, load, stops, trackingEvents);
+                Exception__c exc = checkRule(rule, load, stops, trackingEvents);
                 
                 if (exception != null && !isDuplicateException(exception)) {
                     exceptionsToCreate.add(exception);
@@ -111,7 +111,7 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
      */
     private static Exception__c checkRule(ExceptionRule rule, Load__c load, 
                                           List<Stop__c> stops, List<Tracking__c> trackingEvents) {
-        Exception__c exception = null;
+        Exception__c exc = null;
         
         switch on rule.ruleType {
             when LATE_ARRIVAL {
@@ -433,14 +433,14 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
      * Check if exception already exists (within last 1 hour)
      * Prevents duplicate alerts
      */
-    private static Boolean isDuplicateException(Exception__c exception) {
+    private static Boolean isDuplicateException(Exception__c exc) {
         DateTime oneHourAgo = System.now().addMinutes(-DEDUP_WINDOW_MINUTES);
         
         List<Exception__c> existing = [
             SELECT Id
             FROM Exception__c
-            WHERE Load__c = :exception.Load__c
-            AND Exception_Type__c = :exception.Exception_Type__c
+            WHERE Load__c = :exc.Load__c
+            AND Exception_Type__c = :exc.Exception_Type__c
             AND Triggered_DateTime__c > :oneHourAgo
             AND Status__c = 'Open'
             LIMIT 1
