@@ -59,13 +59,13 @@ public with sharing class ShipperLoadDetailController {
             List<Load__c> loads = [
                 SELECT Id, Name, Shipper__c, Shipper_City__c, Receiver_City__c,
                        Status__c, Pickup_Date__c, Estimated_Delivery__c, Billing_Rate__c,
-                       Equipment_Type__c, Equipment_Length__c, Weight_lbs__c, Commodity__c,
+                       Equipment_Type__c, Weight_lbs__c, Commodity__c,
                        Carrier__c, IsDeleted, Pickup_Contact__c, Pickup_Company__c,
-                       Pickup_Address__c, Pickup_Postal_Code__c, Pickup_State__c, Pickup_Country__c,
-                       Delivery_Contact__c, Delivery_Company__c, Delivery_Address__c,
-                       Delivery_Postal_Code__c, Delivery_State__c, Delivery_Country__c,
+                       Shipper_Address__c, Pickup_Country__c,
+                       Delivery_Contact__c, Delivery_Company__c, Receiver_Address__c,
+                       Delivery_Country__c,
                        Pickup_Confirmation__c, Delivery_Confirmation__c,
-                       Rate_Confirmation_PDF__c, Fuel_Surcharge__c, Notes__c
+                       Fuel_Surcharge__c, Notes__c
                 FROM Load__c
                 WHERE Id = :loadId 
                   AND Shipper__c = :shipperAccountId

@@ -77,7 +77,7 @@ public class ShipperInvoiceListControllerTest {
         List<Load__c> loads = new List<Load__c>();
         loads.add(new Load__c(
             Name = 'LOAD-INV-001',
-            Shipper__c = shipper1.Id,
+            Shipper_Account__c = shipper1.Id,
             Status__c = 'Delivered',
             Pickup_Date__c = System.today().addDays(-10),
             Estimated_Delivery__c = System.today().addDays(-5),
@@ -91,7 +91,7 @@ public class ShipperInvoiceListControllerTest {
         ));
         loads.add(new Load__c(
             Name = 'LOAD-INV-002',
-            Shipper__c = shipper2.Id,
+            Shipper_Account__c = shipper2.Id,
             Status__c = 'Delivered',
             Pickup_Date__c = System.today().addDays(-5),
             Estimated_Delivery__c = System.today(),
@@ -109,7 +109,7 @@ public class ShipperInvoiceListControllerTest {
         List<Invoice__c> invoices = new List<Invoice__c>();
         invoices.add(new Invoice__c(
             Name = 'INV-001',
-            Shipper__c = shipper1.Id,
+            Shipper_Account__c = shipper1.Id,
             Load__c = loads[0].Id,
             Total_Amount__c = 2750,
             Subtotal__c = 2500,
@@ -123,7 +123,7 @@ public class ShipperInvoiceListControllerTest {
         ));
         invoices.add(new Invoice__c(
             Name = 'INV-002',
-            Shipper__c = shipper1.Id,
+            Shipper_Account__c = shipper1.Id,
             Load__c = loads[0].Id,
             Total_Amount__c = 2750,
             Subtotal__c = 2500,
@@ -138,7 +138,7 @@ public class ShipperInvoiceListControllerTest {
         // Overdue invoice
         invoices.add(new Invoice__c(
             Name = 'INV-003',
-            Shipper__c = shipper1.Id,
+            Shipper_Account__c = shipper1.Id,
             Load__c = loads[0].Id,
             Total_Amount__c = 2750,
             Subtotal__c = 2500,
@@ -154,7 +154,7 @@ public class ShipperInvoiceListControllerTest {
         // Invoice for shipper2
         invoices.add(new Invoice__c(
             Name = 'INV-004',
-            Shipper__c = shipper2.Id,
+            Shipper_Account__c = shipper2.Id,
             Load__c = loads[1].Id,
             Total_Amount__c = 1650,
             Subtotal__c = 1500,
