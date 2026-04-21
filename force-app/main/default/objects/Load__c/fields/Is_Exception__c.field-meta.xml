@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <label>Is Exception</label>
     <required>false</required>
-    <trackHistory>true</trackHistory>
+    <trackHistory>false</trackHistory>
     <type>Checkbox</type>
     <defaultValue>false</defaultValue>
 </CustomField>

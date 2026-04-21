@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tarp_Type__c</fullName>
+    <description>Tarp requirement for flatbed loads</description>
+    <label>Tarp Type</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>None</fullName><default>true</default><label>None</label></value>
+            <value><fullName>4ft</fullName><default>false</default><label>4ft Tarp</label></value>
+            <value><fullName>6ft</fullName><default>false</default><label>6ft Tarp</label></value>
+            <value><fullName>8ft</fullName><default>false</default><label>8ft Tarp</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

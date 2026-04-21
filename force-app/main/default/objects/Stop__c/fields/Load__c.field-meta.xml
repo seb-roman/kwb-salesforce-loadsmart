@@ -8,7 +8,6 @@
     <relationshipLabel>Stops</relationshipLabel>
     <relationshipName>Stops</relationshipName>
     <relationshipOrder>0</relationshipOrder>
-    <required>true</required>
     <trackHistory>true</trackHistory>
     <type>MasterDetail</type>
 </CustomField>

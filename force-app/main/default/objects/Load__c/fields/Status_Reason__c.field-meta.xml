@@ -4,9 +4,9 @@
     <description>Detailed reason for current status or exception (e.g., delayed pickup, carrier cancelled, etc.)</description>
     <externalId>false</externalId>
     <label>Status Reason</label>
-    <length>500</length>
+    <length>32768</length>
     <required>false</required>
-    <trackHistory>true</trackHistory>
-    <type>Text</type>
-    <unique>false</unique>
+    <trackHistory>false</trackHistory>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
 </CustomField>

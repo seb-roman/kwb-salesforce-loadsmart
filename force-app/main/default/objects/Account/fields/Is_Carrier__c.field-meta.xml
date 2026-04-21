@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Carrier__c</fullName>
+    <description>True if this account is a freight carrier (has DOT/MC, moves loads)</description>
+    <defaultValue>false</defaultValue>
+    <label>Is Carrier</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

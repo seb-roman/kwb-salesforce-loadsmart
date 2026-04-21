@@ -2,12 +2,18 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>VAL_Rates_Required_When_Quoted</fullName>
     <active>true</active>
-    <description>Billing Rate and Carrier Rate must be set when load transitions to quoted status or beyond. Rate information is required for freight pricing.</description>
+    <description>Billing Rate and Carrier Rate must be set when load transitions to quoted status or beyond.</description>
     <errorConditionFormula>AND(
-        NOT(ISBLANK(Status__c)),
-        OR(Status__c = "quoted", Status__c = "tendered", Status__c = "accepted", Status__c = "dispatched", Status__c = "in_transit", Status__c = "delivered", Status__c = "pod_captured", Status__c = "invoiced", Status__c = "settled", Status__c = "completed"),
+        NOT(ISBLANK(TEXT(Status__c))),
+        OR(
+            ISPICKVAL(Status__c, "quoted"), ISPICKVAL(Status__c, "tendered"),
+            ISPICKVAL(Status__c, "accepted"), ISPICKVAL(Status__c, "dispatched"),
+            ISPICKVAL(Status__c, "in_transit"), ISPICKVAL(Status__c, "delivered"),
+            ISPICKVAL(Status__c, "pod_captured"), ISPICKVAL(Status__c, "invoiced"),
+            ISPICKVAL(Status__c, "settled"), ISPICKVAL(Status__c, "completed")
+        ),
         OR(ISBLANK(Billing_Rate__c), ISBLANK(Carrier_Rate__c))
     )</errorConditionFormula>
     <errorDisplayField>Billing_Rate__c</errorDisplayField>
-    <errorMessage>Both Billing Rate and Carrier Rate are required before quoting a load. Please set rates for shipper and carrier.</errorMessage>
+    <errorMessage>Both Billing Rate and Carrier Rate are required before quoting a load.</errorMessage>
 </ValidationRule>

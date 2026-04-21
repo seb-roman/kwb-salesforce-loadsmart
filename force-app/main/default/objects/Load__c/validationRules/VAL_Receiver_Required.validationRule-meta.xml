@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>VAL_Receiver_Required</fullName>
-    <active>true</active>
-    <description>Receiver is required for all loads. Receiver account must be linked for delivery confirmation and tracking.</description>
-    <errorConditionFormula>AND(
-        NOT(ISBLANK(Status__c)),
-        Status__c != "draft",
-        ISBLANK(Receiver__c)
-    )</errorConditionFormula>
-    <errorDisplayField>Receiver__c</errorDisplayField>
-    <errorMessage>Receiver is required for posted loads. Please select or create a receiver account before posting.</errorMessage>
+    <active>false</active>
+    <description>Receiver is required for all loads beyond draft status. Deactivated pending Receiver__c field deployment.</description>
+    <errorConditionFormula>false</errorConditionFormula>
+    <errorDisplayField>Name</errorDisplayField>
+    <errorMessage>Receiver is required for posted loads.</errorMessage>
 </ValidationRule>

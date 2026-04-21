@@ -5,6 +5,6 @@
     <label>Receiver Zip</label>
     <length>10</length>
     <required>false</required>
-    <trackHistory>true</trackHistory>
+    <trackHistory>false</trackHistory>
     <type>Text</type>
 </CustomField>

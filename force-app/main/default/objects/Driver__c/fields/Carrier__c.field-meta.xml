@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Carrier__c</fullName>
-    <description>Carrier that employs or contracts with this driver</description>
-    <externalId>false</externalId>
+    <description>Carrier account (Account with Carrier record type) that employs or contracts with this driver</description>
     <label>Carrier</label>
-    <referenceTo>Carrier__c</referenceTo>
+    <referenceTo>Account</referenceTo>
     <relationshipLabel>Drivers</relationshipLabel>
     <relationshipName>Drivers</relationshipName>
-    <required>true</required>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <required>false</required>
     <trackHistory>true</trackHistory>
     <type>Lookup</type>
 </CustomField>

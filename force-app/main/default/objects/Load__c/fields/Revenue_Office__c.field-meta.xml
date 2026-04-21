@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <label>Revenue Office</label>
     <required>true</required>
-    <trackHistory>true</trackHistory>
+    <trackHistory>false</trackHistory>
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>

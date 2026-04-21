@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Receiver__c</fullName>
+    <description>True if this account receives freight deliveries</description>
+    <defaultValue>false</defaultValue>
+    <label>Is Receiver</label>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

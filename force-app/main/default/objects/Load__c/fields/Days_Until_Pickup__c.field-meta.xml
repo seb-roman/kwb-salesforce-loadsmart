@@ -3,7 +3,7 @@
     <fullName>Days_Until_Pickup__c</fullName>
     <description>Number of days from today until scheduled pickup</description>
     <externalId>false</externalId>
-    <formula>INT(Pickup_Window_Begin__c - NOW())</formula>
+    <formula>FLOOR(Pickup_Window_Begin__c - NOW())</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Days Until Pickup</label>
     <precision>5</precision>

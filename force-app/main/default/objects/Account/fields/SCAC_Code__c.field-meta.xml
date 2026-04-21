@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Zip__c</fullName>
-    <description>ZIP/Postal code</description>
-    <externalId>false</externalId>
-    <label>ZIP</label>
-    <length>20</length>
+    <fullName>SCAC_Code__c</fullName>
+    <description>Standard Carrier Alpha Code — 2-4 character carrier identifier</description>
+    <label>SCAC Code</label>
+    <length>4</length>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <type>Text</type>

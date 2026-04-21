@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Linear_Feet__c</fullName>
+    <description>Linear feet of trailer space required (critical for flatbed loads)</description>
+    <label>Linear Feet</label>
+    <precision>5</precision>
+    <scale>1</scale>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+</CustomField>

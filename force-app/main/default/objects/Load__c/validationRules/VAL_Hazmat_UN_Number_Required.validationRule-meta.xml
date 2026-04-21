@@ -2,9 +2,9 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>VAL_Hazmat_UN_Number_Required</fullName>
     <active>true</active>
-    <description>When Hazmat_Class is specified, UN_Number is required. Hazmat materials must have proper UN classification for compliance and safety.</description>
+    <description>When Hazmat_Class is specified, UN_Number is required.</description>
     <errorConditionFormula>AND(
-        NOT(ISBLANK(Hazmat_Class__c)),
+        NOT(ISBLANK(TEXT(Hazmat_Class__c))),
         ISBLANK(UN_Number__c)
     )</errorConditionFormula>
     <errorDisplayField>UN_Number__c</errorDisplayField>

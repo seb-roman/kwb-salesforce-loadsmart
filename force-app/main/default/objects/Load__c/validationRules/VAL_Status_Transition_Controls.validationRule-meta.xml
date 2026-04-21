@@ -6,21 +6,19 @@
     <errorConditionFormula>AND(
         ISCHANGED(Status__c),
         OR(
-            AND(PRIORVALUE(Status__c) = "draft", NOT(OR(Status__c = "posted", Status__c = "quoted", Status__c = "cancelled"))),
-            AND(PRIORVALUE(Status__c) = "posted", NOT(OR(Status__c = "quoted", Status__c = "tendered", Status__c = "cancelled"))),
-            AND(PRIORVALUE(Status__c) = "quoted", NOT(OR(Status__c = "tendered", Status__c = "posted", Status__c = "cancelled"))),
-            AND(PRIORVALUE(Status__c) = "tendered", NOT(OR(Status__c = "accepted", Status__c = "cancelled"))),
-            AND(PRIORVALUE(Status__c) = "accepted", NOT(OR(Status__c = "dispatched", Status__c = "cancelled"))),
-            AND(PRIORVALUE(Status__c) = "dispatched", NOT(OR(Status__c = "in_transit", Status__c = "cancelled"))),
-            AND(PRIORVALUE(Status__c) = "in_transit", NOT(OR(Status__c = "delivered", Status__c = "exception", Status__c = "cancelled"))),
-            AND(PRIORVALUE(Status__c) = "delivered", NOT(OR(Status__c = "pod_captured", Status__c = "exception", Status__c = "cancelled"))),
-            AND(PRIORVALUE(Status__c) = "pod_captured", NOT(OR(Status__c = "invoiced", Status__c = "exception", Status__c = "disputed"))),
-            AND(PRIORVALUE(Status__c) = "invoiced", NOT(OR(Status__c = "settled", Status__c = "disputed"))),
-            AND(PRIORVALUE(Status__c) = "settled", NOT(OR(Status__c = "completed", Status__c = "disputed"))),
-            AND(PRIORVALUE(Status__c) = "completed", Status__c != "completed"),
-            AND(PRIORVALUE(Status__c) = "cancelled", Status__c != "cancelled")
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "draft"), NOT(OR(ISPICKVAL(Status__c, "posted"), ISPICKVAL(Status__c, "quoted"), ISPICKVAL(Status__c, "cancelled")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "posted"), NOT(OR(ISPICKVAL(Status__c, "quoted"), ISPICKVAL(Status__c, "tendered"), ISPICKVAL(Status__c, "cancelled")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "quoted"), NOT(OR(ISPICKVAL(Status__c, "tendered"), ISPICKVAL(Status__c, "posted"), ISPICKVAL(Status__c, "cancelled")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "tendered"), NOT(OR(ISPICKVAL(Status__c, "accepted"), ISPICKVAL(Status__c, "cancelled")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "accepted"), NOT(OR(ISPICKVAL(Status__c, "dispatched"), ISPICKVAL(Status__c, "cancelled")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "dispatched"), NOT(OR(ISPICKVAL(Status__c, "in_transit"), ISPICKVAL(Status__c, "cancelled")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "in_transit"), NOT(OR(ISPICKVAL(Status__c, "delivered"), ISPICKVAL(Status__c, "exception"), ISPICKVAL(Status__c, "cancelled")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "delivered"), NOT(OR(ISPICKVAL(Status__c, "pod_captured"), ISPICKVAL(Status__c, "exception"), ISPICKVAL(Status__c, "cancelled")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "pod_captured"), NOT(OR(ISPICKVAL(Status__c, "invoiced"), ISPICKVAL(Status__c, "exception"), ISPICKVAL(Status__c, "disputed")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "invoiced"), NOT(OR(ISPICKVAL(Status__c, "settled"), ISPICKVAL(Status__c, "disputed")))),
+            AND(ISPICKVAL(PRIORVALUE(Status__c), "settled"), NOT(OR(ISPICKVAL(Status__c, "completed"), ISPICKVAL(Status__c, "disputed"))))
         )
     )</errorConditionFormula>
     <errorDisplayField>Status__c</errorDisplayField>
-    <errorMessage>Invalid status transition. Please follow the workflow: Draft → Posted/Quoted → Tendered → Accepted → Dispatched → In Transit → Delivered → POD Captured → Invoiced → Settled → Completed. Cancelled is a terminal state.</errorMessage>
+    <errorMessage>Invalid status transition. Please follow the workflow: Draft → Posted/Quoted → Tendered → Accepted → Dispatched → In Transit → Delivered → POD Captured → Invoiced → Settled → Completed.</errorMessage>
 </ValidationRule>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_Reference_Number__c</fullName>
+    <description>Shipper-provided reference number for this load (e.g. ShipperGuide Quote ID, BOL reference)</description>
+    <label>Customer Reference Number</label>
+    <length>50</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

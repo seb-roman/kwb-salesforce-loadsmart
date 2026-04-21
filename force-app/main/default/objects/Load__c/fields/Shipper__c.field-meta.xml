@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Shipper__c</fullName>
-    <description>Shipper (Account lookup) - origin of freight</description>
-    <externalId>false</externalId>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Shipper account for this load (Account with Business Partner record type)</description>
     <label>Shipper</label>
     <referenceTo>Account</referenceTo>
     <relationshipLabel>Loads (Shipper)</relationshipLabel>
     <relationshipName>Loads_Shipper</relationshipName>
-    <required>true</required>
+    <required>false</required>
     <trackHistory>true</trackHistory>
     <type>Lookup</type>
 </CustomField>

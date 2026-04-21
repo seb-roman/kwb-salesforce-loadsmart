@@ -2,8 +2,11 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>VAL_Pickup_Date_Not_In_Past</fullName>
     <active>true</active>
-    <description>Pickup date must be today or in the future. Cannot schedule pickups in the past.</description>
-    <errorConditionFormula>Pickup_Window_Begin__c &lt; TODAY()</errorConditionFormula>
+    <description>Pickup date must be today or in the future.</description>
+    <errorConditionFormula>AND(
+        NOT(ISBLANK(Pickup_Window_Begin__c)),
+        DATEVALUE(Pickup_Window_Begin__c) &lt; TODAY()
+    )</errorConditionFormula>
     <errorDisplayField>Pickup_Window_Begin__c</errorDisplayField>
     <errorMessage>Pickup date cannot be in the past. Please select today or a future date.</errorMessage>
 </ValidationRule>

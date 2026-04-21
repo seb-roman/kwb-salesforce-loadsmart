@@ -6,6 +6,7 @@
     <label>Instructions</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
+    <length>32768</length>
     <type>LongTextArea</type>
     <visibleLines>3</visibleLines>
 </CustomField>
