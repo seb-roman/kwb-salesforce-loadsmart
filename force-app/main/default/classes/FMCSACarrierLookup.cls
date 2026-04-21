@@ -41,7 +41,7 @@ public with sharing class FMCSACarrierLookup {
         /**
          * Factory method: Create CarrierData from FMCSACarrierDTO
          */
-        public static CarrierData fromDTO(FMCSACarrierDTO dto) {
+        public CarrierData fromDTO(FMCSACarrierDTO dto) {
             CarrierData data = new CarrierData();
             
             if (dto.carrier != null) {
@@ -108,7 +108,7 @@ public with sharing class FMCSACarrierLookup {
             
             if (res.getStatusCode() == 200) {
                 FMCSACarrierDTO dto = FMCSACarrierDTO.parse(res.getBody());
-                result = CarrierData.fromDTO(dto);
+                result = new CarrierData().fromDTO(dto);
                 result.rawResponse = res.getBody();
             } else if (res.getStatusCode() == 404) {
                 // Carrier not found
@@ -145,15 +145,6 @@ public with sharing class FMCSACarrierLookup {
         return 'Pending';
     }
     
-    /**
-     * Test method for FMCSA lookup
-     */
-    @isTest
-    public static void testMCNumberLookup() {
-        FMCSACarrierLookup lookup = new FMCSACarrierLookup();
-        CarrierData data = lookup.searchByMCNumber('1776323');
-        
-        System.assertNotEquals(null, data);
-        // Actual assertions depend on FMCSA response
-    }
+    // @isTest removed - test methods must be in @isTest classes only
+    // See FMCSACarrierLookupTest.cls for tests
 }

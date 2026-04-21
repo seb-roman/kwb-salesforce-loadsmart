@@ -119,7 +119,7 @@ public with sharing class TrackingIngestJob implements Queueable, Database.Allow
         try {
             // First, find Equipment__c record with matching Motive vehicle ID
             List<Equipment__c> equipment = [
-                SELECT Id, Load__c FROM Equipment__c 
+                SELECT Id, Current_Load__c FROM Equipment__c 
                 WHERE Motive_Vehicle_ID__c = :motiveVehicleId
                 LIMIT 10 // Get multiple in case of reassignment
             ];
@@ -132,8 +132,8 @@ public with sharing class TrackingIngestJob implements Queueable, Database.Allow
             // Extract load IDs from equipment
             Set<Id> loadIds = new Set<Id>();
             for (Equipment__c eq : equipment) {
-                if (eq.Load__c != null) {
-                    loadIds.add(eq.Load__c);
+                if (eq.Current_Load__c != null) {
+                    loadIds.add(eq.Current_Load__c);
                 }
             }
             
@@ -223,7 +223,7 @@ public with sharing class TrackingIngestJob implements Queueable, Database.Allow
             Load__c load = loads[0];
             
             // Increment counter and get the new value
-            Integer nextSeq = (load.Tracking_Sequence_Counter__c ?? 0) + 1;
+            Integer nextSeq = (Integer)(load.Tracking_Sequence_Counter__c ?? 0) + 1;
             load.Tracking_Sequence_Counter__c = nextSeq;
             
             // Update to persist the new counter (still in transaction, still locked)
@@ -339,8 +339,8 @@ public with sharing class TrackingIngestJob implements Queueable, Database.Allow
             
             Stop__c targetStop = null;
             for (Stop__c stop : stops) {
-                if (isWithinGeofence(tracking.Latitude__c, tracking.Longitude__c, 
-                                    stop.Latitude__c, stop.Longitude__c)) {
+                if (isWithinGeofence((Double)tracking.Latitude__c, (Double)tracking.Longitude__c, 
+                                    (Double)stop.Latitude__c, (Double)stop.Longitude__c)) {
                     targetStop = stop;
                     break;
                 }
@@ -417,10 +417,10 @@ public with sharing class TrackingIngestJob implements Queueable, Database.Allow
         Double earthRadiusMiles = 3959.0;
         
         // Convert to radians
-        Double phi1 = Math.toRadians(lat1);
-        Double phi2 = Math.toRadians(lat2);
-        Double deltaLat = Math.toRadians(lat2 - lat1);
-        Double deltaLon = Math.toRadians(lon2 - lon1);
+        Double phi1 = (lat1 * Math.PI) / 180.0;
+        Double phi2 = (lat2 * Math.PI) / 180.0;
+        Double deltaLat = ((lat2 - lat1) * Math.PI) / 180.0;
+        Double deltaLon = ((lon2 - lon1) * Math.PI) / 180.0;
         
         // Haversine formula
         Double a = Math.sin(deltaLat / 2.0) * Math.sin(deltaLat / 2.0) +

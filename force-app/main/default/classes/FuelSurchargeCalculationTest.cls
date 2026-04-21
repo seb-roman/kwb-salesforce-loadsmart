@@ -123,7 +123,7 @@ private class FuelSurchargeCalculationTest {
         try {
             FuelSurchargeCalculation.validateFuelSurcharge(load);
         } catch (Exception e) {
-            System.fail('Validation should pass for positive surcharge: ' + e.getMessage());
+            System.assert(false, 'Validation should pass for positive surcharge: ' + e.getMessage());
         }
     }
     
@@ -136,7 +136,7 @@ private class FuelSurchargeCalculationTest {
         // Act & Assert
         try {
             FuelSurchargeCalculation.validateFuelSurcharge(load);
-            System.fail('Should throw exception for negative surcharge');
+            System.assert(false, 'Should throw exception for negative surcharge');
         } catch (IllegalArgumentException e) {
             System.assert(e.getMessage().contains('negative'));
         }

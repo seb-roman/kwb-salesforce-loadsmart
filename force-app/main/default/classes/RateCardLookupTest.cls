@@ -24,30 +24,30 @@ private class RateCardLookupTest {
         // Priority 1: Shipper-specific rate (origin + destination + equipment)
         RateCard__c card1 = new RateCard__c();
         card1.Account__c = shipper.Id;
-        card1.Amount__c = 1500; // $1500/load
+        card1.Base_Rate__c = 1500; // $1500/load
         card1.Priority__c = 1;
         card1.Equipment_Type__c = 'Dry Van';
         card1.Origin__c = 'OH';
         card1.Destination__c = 'PA';
-        card1.Is_Active__c = true;
+        card1.Active__c = true;
         rateCards.add(card1);
         
         // Priority 2: Default rate (equipment only)
         RateCard__c card2 = new RateCard__c();
         card2.Account__c = shipper.Id;
-        card2.Amount__c = 1200; // $1200/load
+        card2.Base_Rate__c = 1200; // $1200/load
         card2.Priority__c = 2;
         card2.Equipment_Type__c = 'Dry Van';
-        card2.Is_Active__c = true;
+        card2.Active__c = true;
         rateCards.add(card2);
         
         // Inactive rate (should be ignored)
         RateCard__c card3 = new RateCard__c();
         card3.Account__c = shipper.Id;
-        card3.Amount__c = 2000;
+        card3.Base_Rate__c = 2000;
         card3.Priority__c = 1;
         card3.Equipment_Type__c = 'Reefer';
-        card3.Is_Active__c = false;
+        card3.Active__c = false;
         rateCards.add(card3);
         
         insert rateCards;
@@ -105,7 +105,7 @@ private class RateCardLookupTest {
     static void testValidateRateCard_Success() {
         // Arrange
         RateCard__c card = new RateCard__c();
-        card.Amount__c = 1500;
+        card.Base_Rate__c = 1500;
         card.Priority__c = 1;
         card.Equipment_Type__c = 'Dry Van';
         
@@ -113,7 +113,7 @@ private class RateCardLookupTest {
         try {
             RateCardLookup.validateRateCard(card);
         } catch (Exception e) {
-            System.fail('Validation should pass for valid rate card: ' + e.getMessage());
+            System.assert(false, 'Validation should pass for valid rate card: ' + e.getMessage());
         }
     }
     
@@ -121,14 +121,14 @@ private class RateCardLookupTest {
     static void testValidateRateCard_InvalidAmount() {
         // Arrange
         RateCard__c card = new RateCard__c();
-        card.Amount__c = -100; // Negative amount
+        card.Base_Rate__c = -100; // Negative amount
         card.Priority__c = 1;
         card.Equipment_Type__c = 'Dry Van';
         
         // Act & Assert
         try {
             RateCardLookup.validateRateCard(card);
-            System.fail('Should throw exception for invalid amount');
+            System.assert(false, 'Should throw exception for invalid amount');
         } catch (IllegalArgumentException e) {
             System.assert(e.getMessage().contains('greater than 0'));
         }
@@ -138,14 +138,14 @@ private class RateCardLookupTest {
     static void testValidateRateCard_InvalidPriority() {
         // Arrange
         RateCard__c card = new RateCard__c();
-        card.Amount__c = 1500;
+        card.Base_Rate__c = 1500;
         card.Priority__c = 5; // Invalid priority
         card.Equipment_Type__c = 'Dry Van';
         
         // Act & Assert
         try {
             RateCardLookup.validateRateCard(card);
-            System.fail('Should throw exception for invalid priority');
+            System.assert(false, 'Should throw exception for invalid priority');
         } catch (IllegalArgumentException e) {
             System.assert(e.getMessage().contains('Priority'));
         }
@@ -155,14 +155,14 @@ private class RateCardLookupTest {
     static void testValidateRateCard_MissingEquipment() {
         // Arrange
         RateCard__c card = new RateCard__c();
-        card.Amount__c = 1500;
+        card.Base_Rate__c = 1500;
         card.Priority__c = 1;
         // Equipment_Type__c is blank
         
         // Act & Assert
         try {
             RateCardLookup.validateRateCard(card);
-            System.fail('Should throw exception for missing equipment');
+            System.assert(false, 'Should throw exception for missing equipment');
         } catch (IllegalArgumentException e) {
             System.assert(e.getMessage().contains('Equipment type is required'));
         }
@@ -186,15 +186,15 @@ private class RateCardLookupTest {
         // Arrange
         Account shipper = [SELECT Id FROM Account LIMIT 1];
         Load__c load = new Load__c();
-        load.Shipper_Account__c = shipper.Id;
+        load.Shipper__c = shipper.Id;
         load.Equipment_Type__c = 'Dry Van';
-        load.Origin_State__c = 'OH';
-        load.Destination_State__c = 'PA';
+        load.Shipper_State__c = 'OH';
+        load.Receiver_State__c = 'PA';
         
         // Act
         RateCardLookup.lookupAndApplyRates(load);
         
         // Assert
-        System.assertEquals(1500, load.Shipper_Rate__c, 'Should apply shipper-specific rate');
+        System.assertEquals(1500, load.Billing_Rate__c, 'Should apply shipper-specific rate');
     }
 }

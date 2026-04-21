@@ -120,41 +120,8 @@ public with sharing class LoadsmartPostback {
         }
     }
     
-    /**
-     * Scheduled Batch: Sync all "Assigned" loads to Loadsmart nightly
-     * 
-     * INSTALL INSTRUCTIONS (when ready):
-     * 1. System > Apex Classes > Schedule Apex
-     * 2. Class: LoadsmartPostbackBatch
-     * 3. Schedule: 0 0 2 * * ? (2 AM daily)
-     */
-    public class LoadsmartPostbackBatch implements Database.Batchable<SObject>, Schedulable {
-        
-        public void execute(SchedulableContext ctx) {
-            Database.executeBatch(new LoadsmartPostbackBatch(), 10);
-        }
-        
-        public Database.QueryLocator start(Database.BatchableContext ctx) {
-            return Database.getQueryLocator([
-                SELECT Id 
-                FROM Load__c 
-                WHERE Status__c IN ('Assigned', 'Confirmed') 
-                AND Loadsmart_Synced__c = false
-                ORDER BY CreatedDate DESC
-            ]);
-        }
-        
-        public void execute(Database.BatchableContext ctx, List<Load__c> loads) {
-            LoadsmartPostback postback = new LoadsmartPostback();
-            for (Load__c load : loads) {
-                postback.syncLoadToLoadsmart(load.Id);
-            }
-        }
-        
-        public void finish(Database.BatchableContext ctx) {
-            System.debug('LoadsmartPostbackBatch completed');
-        }
-    }
+    // LoadsmartPostbackBatch moved to top-level class LoadsmartPostbackBatch.cls
+    
     
     /**
      * Get OAuth access token from Loadsmart using Named Credential
@@ -185,8 +152,5 @@ public with sharing class LoadsmartPostback {
         return null;
     }
     
-    @isTest
-    public static void testPostback() {
-        // Test would require mocking HTTP responses and test Load data
-    }
+    // @isTest methods belong in @isTest classes only - moved to LoadsmartPostbackTest.cls
 }

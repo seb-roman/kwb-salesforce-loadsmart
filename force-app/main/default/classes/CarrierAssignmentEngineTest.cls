@@ -324,7 +324,7 @@ public class CarrierAssignmentEngineTest {
         
         // FastRoute Inc should NOT be in top carriers
         for (CarrierAssignmentEngine.CarrierScoreInfo info : result.topCarriers) {
-            Assert.notEqual('FastRoute Inc (Critical Violation <90d)', info.carrierName, 
+            System.assertNotEquals('FastRoute Inc (Critical Violation <90d)', info.carrierName, 
                 'Carrier with critical violation <90d should not be in top 3');
         }
         
@@ -442,7 +442,7 @@ public class CarrierAssignmentEngineTest {
         
         // ExpiredInsurance Inc should NOT be in top carriers
         for (CarrierAssignmentEngine.CarrierScoreInfo info : result.topCarriers) {
-            Assert.notEqual('ExpiredInsurance Inc (HARD FILTER)', info.carrierName, 
+            System.assertNotEquals('ExpiredInsurance Inc (HARD FILTER)', info.carrierName, 
                 'Carrier with expired insurance should not be in top 3');
         }
         

@@ -39,14 +39,14 @@ public class SettlementBatch implements Database.Batchable<SObject>, Schedulable
      * Batch start - query loads for settlement
      */
     public Database.QueryLocator start(Database.BatchableContext ctx) {
-        String query = 'SELECT Id, Name, Assigned_Carrier__c, Carrier_Rate__c, ' +
+        String query = 'SELECT Id, Name, Carrier__c, Carrier_Rate__c, ' +
                        'Invoice_Status__c, Settlement_Status__c, CreatedDate ' +
                        'FROM Load__c ' +
                        'WHERE Invoice_Status__c = \'Invoiced\' ' +
                        'AND Settlement_Status__c = \'Not_Settled\' ' +
                        'AND CreatedDate >= ' + formatDateTimeForSOQL(weekStart) + ' ' +
                        'AND CreatedDate < ' + formatDateTimeForSOQL(weekEnd) + ' ' +
-                       'ORDER BY Assigned_Carrier__c ASC';
+                       'ORDER BY Carrier__c ASC';
         return Database.getQueryLocator(query);
     }
     
@@ -63,12 +63,12 @@ public class SettlementBatch implements Database.Batchable<SObject>, Schedulable
         Set<Id> carrierIds = new Set<Id>();
         
         for (Load__c load : loads) {
-            if (load.Assigned_Carrier__c != null) {
-                if (!loadsByCarrier.containsKey(load.Assigned_Carrier__c)) {
-                    loadsByCarrier.put(load.Assigned_Carrier__c, new List<Load__c>());
+            if (load.Carrier__c != null) {
+                if (!loadsByCarrier.containsKey(load.Carrier__c)) {
+                    loadsByCarrier.put(load.Carrier__c, new List<Load__c>());
                 }
-                loadsByCarrier.get(load.Assigned_Carrier__c).add(load);
-                carrierIds.add(load.Assigned_Carrier__c);
+                loadsByCarrier.get(load.Carrier__c).add(load);
+                carrierIds.add(load.Carrier__c);
             }
         }
         
@@ -78,7 +78,7 @@ public class SettlementBatch implements Database.Batchable<SObject>, Schedulable
             SELECT Carrier__c FROM Settlement__c
             WHERE Carrier__c IN :carrierIds
             AND Settlement_Period_Start__c = :weekStart.date()
-            AND Settlement_Status__c IN ('Pending', 'Approved', 'Paid')
+            AND Status__c IN ('Pending', 'Approved', 'Paid')
         ];
         
         for (Settlement__c settlement : existingSettlements) {
@@ -130,7 +130,7 @@ public class SettlementBatch implements Database.Batchable<SObject>, Schedulable
             // Query all settlements created in this batch
             List<Settlement__c> settlements = [
                 SELECT Id, Name, Carrier__c, Carrier__r.Name, Gross_Amount__c, 
-                       Deductions__c, Net_Payment__c, Settlement_Status__c
+                       Deductions__c, Net_Payment__c, Status__c
                 FROM Settlement__c
                 WHERE Settlement_Period_Start__c = :weekStart.date()
                 ORDER BY Carrier__r.Name ASC
@@ -176,7 +176,7 @@ public class SettlementBatch implements Database.Batchable<SObject>, Schedulable
             settlement.Net_Payment__c = (grossAmount - deductions).setScale(2, RoundingMode.HALF_UP);
             
             // Set status
-            settlement.Settlement_Status__c = 'Pending';
+            settlement.Status__c = 'Pending';
             
             return settlement;
             
@@ -235,18 +235,19 @@ public class SettlementBatch implements Database.Batchable<SObject>, Schedulable
      * Generate CSV export for settlement
      */
     private String generateSettlementCSV(List<Settlement__c> settlements) {
-        StringBuilder csv = new StringBuilder();
-        csv.append('Carrier,Settlement Period,Gross Amount,Deductions,Net Payment\n');
+        List<String> lines = new List<String>();
+        lines.add('Carrier,Settlement Period,Gross Amount,Deductions,Net Payment');
         
         for (Settlement__c settlement : settlements) {
-            csv.append(settlement.Carrier__r.Name).append(',');
-            csv.append(settlement.Settlement_Period_Start__c).append(',');
-            csv.append(settlement.Gross_Amount__c).append(',');
-            csv.append(settlement.Deductions__c).append(',');
-            csv.append(settlement.Net_Payment__c).append('\n');
+            String line = settlement.Carrier__r.Name + ',' +
+                          settlement.Settlement_Period_Start__c + ',' +
+                          settlement.Gross_Amount__c + ',' +
+                          settlement.Deductions__c + ',' +
+                          settlement.Net_Payment__c;
+            lines.add(line);
         }
         
-        return csv.toString();
+        return String.join(lines, '\n');
     }
     
     /**

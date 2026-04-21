@@ -7,7 +7,7 @@
  * @version 1.0
  * @date April 2, 2026
  */
-with sharing class ShipperPortalController {
+public with sharing class ShipperPortalController {
     
     /**
      * LoadListItem
@@ -81,11 +81,11 @@ with sharing class ShipperPortalController {
             
             // Query loads for this shipper (RLS enforced)
             List<Load__c> loads = [
-                SELECT Id, Load_Number__c, Origin_City__c, Destination_City__c, 
-                       Status__c, Shipper_Rate__c, Assigned_Carrier__r.Name,
+                SELECT Id, Load_Number__c, Shipper_City__c, Receiver_City__c, 
+                       Status__c, Billing_Rate__c, Carrier__r.Name,
                        Current_Location__Latitude__s, Current_Location__Longitude__s
                 FROM Load__c
-                WHERE Shipper_Account__c = :shipperAccountId
+                WHERE Shipper__c = :shipperAccountId
                 ORDER BY CreatedDate DESC
                 LIMIT :pageSize
                 OFFSET :offset
@@ -96,11 +96,11 @@ with sharing class ShipperPortalController {
                 LoadListItem item = new LoadListItem();
                 item.id = load.Id;
                 item.loadNumber = load.Load_Number__c;
-                item.origin = load.Origin_City__c;
-                item.destination = load.Destination_City__c;
+                item.origin = load.Shipper_City__c;
+                item.destination = load.Receiver_City__c;
                 item.status = load.Status__c;
-                item.ratePerMile = load.Shipper_Rate__c;
-                item.assignedCarrier = load.Assigned_Carrier__r != null ? load.Assigned_Carrier__r.Name : 'Unassigned';
+                item.ratePerMile = load.Billing_Rate__c;
+                item.assignedCarrier = load.Carrier__r != null ? load.Carrier__r.Name : 'Unassigned';
                 item.latitude = load.Current_Location__Latitude__s;
                 item.longitude = load.Current_Location__Longitude__s;
                 items.add(item);
@@ -139,16 +139,15 @@ with sharing class ShipperPortalController {
             
             // Query single load (RLS: must belong to this shipper)
             List<Load__c> loads = [
-                SELECT Id, Load_Number__c, Reference_Number__c, Shipper_Rate__c,
-                       Origin_City__c, Destination_City__c, Status__c,
-                       Pickup_Window_Start__c, Pickup_Window_End__c,
-                       Delivery_Window_Start__c, Delivery_Window_End__c,
-                       Assigned_Carrier__r.Name, Assigned_Carrier__r.Phone,
-                       Assigned_Carrier__r.Primary_Contact__r.Name,
+                SELECT Id, Load_Number__c, Customer_Reference_Number__c, Billing_Rate__c,
+                       Shipper_City__c, Receiver_City__c, Status__c,
+                       Pickup_Window_Begin__c, Pickup_Window_End__c,
+                       Delivery_Window_Begin__c, Delivery_Window_End__c,
+                       Carrier__r.Name, Carrier__r.Phone,
                        Current_Location__Latitude__s, Current_Location__Longitude__s,
                        Current_Address__c, Last_Status_Update__c
                 FROM Load__c
-                WHERE Id = :loadId AND Shipper_Account__c = :shipperAccountId
+                WHERE Id = :loadId AND Shipper__c = :shipperAccountId
             ];
             
             if (loads.isEmpty()) {
@@ -160,14 +159,14 @@ with sharing class ShipperPortalController {
             LoadDetail detail = new LoadDetail();
             detail.id = load.Id;
             detail.loadNumber = load.Load_Number__c;
-            detail.referenceNumber = load.Reference_Number__c;
-            detail.shipper_rate = load.Shipper_Rate__c;
-            detail.origin = load.Origin_City__c;
-            detail.destination = load.Destination_City__c;
+            detail.referenceNumber = load.Customer_Reference_Number__c;
+            detail.shipper_rate = load.Billing_Rate__c;
+            detail.origin = load.Shipper_City__c;
+            detail.destination = load.Receiver_City__c;
             detail.status = load.Status__c;
-            detail.assignedCarrier = load.Assigned_Carrier__r != null ? load.Assigned_Carrier__r.Name : 'Unassigned';
-            detail.carrierContactName = load.Assigned_Carrier__r?.Primary_Contact__r?.Name;
-            detail.carrierPhone = load.Assigned_Carrier__r?.Phone;
+            detail.assignedCarrier = load.Carrier__r != null ? load.Carrier__r.Name : 'Unassigned';
+            detail.carrierContactName = null;
+            detail.carrierPhone = load.Carrier__r?.Phone;
             detail.latitude = load.Current_Location__Latitude__s;
             detail.longitude = load.Current_Location__Longitude__s;
             detail.currentAddress = load.Current_Address__c;
@@ -207,15 +206,15 @@ with sharing class ShipperPortalController {
             
             // Search across multiple fields
             List<Load__c> loads = [
-                SELECT Id, Load_Number__c, Origin_City__c, Destination_City__c,
-                       Status__c, Shipper_Rate__c, Assigned_Carrier__r.Name,
+                SELECT Id, Load_Number__c, Shipper_City__c, Receiver_City__c,
+                       Status__c, Billing_Rate__c, Carrier__r.Name,
                        Current_Location__Latitude__s, Current_Location__Longitude__s
                 FROM Load__c
-                WHERE Shipper_Account__c = :shipperAccountId
+                WHERE Shipper__c = :shipperAccountId
                 AND (Load_Number__c LIKE :searchPattern
-                     OR Reference_Number__c LIKE :searchPattern
-                     OR Origin_City__c LIKE :searchPattern
-                     OR Destination_City__c LIKE :searchPattern)
+                     OR Customer_Reference_Number__c LIKE :searchPattern
+                     OR Shipper_City__c LIKE :searchPattern
+                     OR Receiver_City__c LIKE :searchPattern)
                 LIMIT 50
             ];
             
@@ -224,11 +223,11 @@ with sharing class ShipperPortalController {
                 LoadListItem item = new LoadListItem();
                 item.id = load.Id;
                 item.loadNumber = load.Load_Number__c;
-                item.origin = load.Origin_City__c;
-                item.destination = load.Destination_City__c;
+                item.origin = load.Shipper_City__c;
+                item.destination = load.Receiver_City__c;
                 item.status = load.Status__c;
-                item.ratePerMile = load.Shipper_Rate__c;
-                item.assignedCarrier = load.Assigned_Carrier__r != null ? load.Assigned_Carrier__r.Name : 'Unassigned';
+                item.ratePerMile = load.Billing_Rate__c;
+                item.assignedCarrier = load.Carrier__r != null ? load.Carrier__r.Name : 'Unassigned';
                 item.latitude = load.Current_Location__Latitude__s;
                 item.longitude = load.Current_Location__Longitude__s;
                 items.add(item);

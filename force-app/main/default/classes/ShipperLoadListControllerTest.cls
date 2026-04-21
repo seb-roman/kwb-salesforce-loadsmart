@@ -25,7 +25,7 @@ public class ShipperLoadListControllerTest {
 
         // Create test contact
         Contact contact = new Contact(
-            AccountId = shipper.Id,
+            // AccountId set via ContactId
             FirstName = 'John',
             LastName = 'Doe',
             Email = 'john@shipper.com'
@@ -39,7 +39,7 @@ public class ShipperLoadListControllerTest {
             Email = 'john@shipper.com',
             Username = 'john.shipper@shipper.com.portal',
             ContactId = contact.Id,
-            AccountId = shipper.Id,
+            // AccountId set via ContactId
             ProfileId = [SELECT Id FROM Profile WHERE Name = 'Shipper User' LIMIT 1]?.Id,
             IsActive = true
         );
@@ -50,16 +50,16 @@ public class ShipperLoadListControllerTest {
         for (Integer i = 0; i < 35; i++) {
             loads.add(new Load__c(
                 Name = 'LOAD-' + (i + 1),
-                Shipper_Account__c = shipper.Id,
+                Shipper__c = shipper.Id,
                 Status__c = i < 10 ? 'Posted' : (i < 20 ? 'In Transit' : 'Delivered'),
                 Pickup_Date__c = System.today().addDays(-10 + i),
                 Estimated_Delivery__c = System.today().addDays(i + 5),
-                Load_Type__c = i % 2 == 0 ? 'FTL' : 'LTL',
-                Pickup_City__c = 'Columbus',
-                Delivery_City__c = 'Atlanta',
-                Shipper_Rate__c = 2500 + (i * 100),
+                Load_Type__c = Math.mod(i, 2) == 0 ? 'FTL' : 'LTL',
+                Shipper_City__c = 'Columbus',
+                Receiver_City__c = 'Atlanta',
+                Billing_Rate__c = 2500 + (i * 100),
                 Equipment_Type__c = 'Flatbed',
-                Weight__c = 45000,
+                Weight_lbs__c = 45000,
                 Commodity__c = 'General Freight'
             ));
         }
@@ -158,7 +158,7 @@ public class ShipperLoadListControllerTest {
             );
 
             Assert.isNotNull(response, 'Response should not be null');
-            Assert.isGreater(response.totalRecords, 0, 'Should return FTL loads');
+            System.assert(response.totalRecords > 0, 'Should return FTL loads');
             
             // Verify all returned loads have FTL type
             for (Load__c load : response.loads) {
@@ -207,7 +207,7 @@ public class ShipperLoadListControllerTest {
         List<String> statuses = ShipperLoadListController.getStatusOptions();
 
         Assert.isNotNull(statuses, 'Status options should not be null');
-        Assert.isGreater(statuses.size(), 0, 'Should return at least one status option');
+        System.assert(statuses.size() > 0, 'Should return at least one status option');
         // Verify expected statuses exist
         Assert.isTrue(statuses.contains('Posted'), 'Posted status should exist');
         Assert.isTrue(statuses.contains('In Transit'), 'In Transit status should exist');
@@ -224,7 +224,7 @@ public class ShipperLoadListControllerTest {
         List<String> loadTypes = ShipperLoadListController.getLoadTypeOptions();
 
         Assert.isNotNull(loadTypes, 'Load type options should not be null');
-        Assert.isGreater(loadTypes.size(), 0, 'Should return at least one load type');
+        System.assert(loadTypes.size() > 0, 'Should return at least one load type');
         // Verify expected load types exist
         Assert.isTrue(loadTypes.contains('FTL'), 'FTL should exist');
         Assert.isTrue(loadTypes.contains('LTL'), 'LTL should exist');
@@ -241,7 +241,7 @@ public class ShipperLoadListControllerTest {
         insert shipper2;
 
         Contact contact2 = new Contact(
-            AccountId = shipper2.Id,
+            // AccountId set via ContactId
             FirstName = 'Jane',
             LastName = 'Smith',
             Email = 'jane@othershiper.com'
@@ -254,7 +254,7 @@ public class ShipperLoadListControllerTest {
             Email = 'jane@othershiper.com',
             Username = 'jane.smith@othershiper.com.portal',
             ContactId = contact2.Id,
-            AccountId = shipper2.Id,
+            // AccountId set via ContactId
             ProfileId = [SELECT Id FROM Profile WHERE Name = 'Shipper User' LIMIT 1]?.Id,
             IsActive = true
         );
@@ -263,16 +263,16 @@ public class ShipperLoadListControllerTest {
         // Create load for shipper2
         Load__c load2 = new Load__c(
             Name = 'LOAD-SHIPPER2',
-            Shipper_Account__c = shipper2.Id,
+            Shipper__c = shipper2.Id,
             Status__c = 'Posted',
             Pickup_Date__c = System.today(),
             Estimated_Delivery__c = System.today().addDays(5),
             Load_Type__c = 'FTL',
-            Pickup_City__c = 'Columbus',
-            Delivery_City__c = 'Atlanta',
-            Shipper_Rate__c = 2500,
+            Shipper_City__c = 'Columbus',
+            Receiver_City__c = 'Atlanta',
+            Billing_Rate__c = 2500,
             Equipment_Type__c = 'Flatbed',
-            Weight__c = 45000,
+            Weight_lbs__c = 45000,
             Commodity__c = 'General Freight'
         );
         insert load2;

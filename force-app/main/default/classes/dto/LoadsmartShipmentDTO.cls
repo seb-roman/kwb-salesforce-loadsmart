@@ -46,7 +46,7 @@ public class LoadsmartShipmentDTO {
         public Decimal amount { get; set; }
         
         @AuraEnabled
-        public String currency { get; set; }
+        public String currencyCode { get; set; } // renamed from currency (reserved word)
     }
     
     /**

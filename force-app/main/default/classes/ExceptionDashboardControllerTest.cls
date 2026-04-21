@@ -333,8 +333,8 @@ public with sharing class ExceptionDashboardControllerTest {
             Triggered_DateTime__c = System.now(),
             Status__c = status
         );
-        insert exception;
-        return exception;
+        insert exc;
+        return exc;
     }
     
     private static void createTestExceptions(Integer count, String severity, String exceptionType, String status) {
@@ -364,6 +364,6 @@ public with sharing class ExceptionDashboardControllerTest {
             Triggered_DateTime__c = triggeredTime,
             Status__c = 'Open'
         );
-        insert exception;
+        insert exc;
     }
 }

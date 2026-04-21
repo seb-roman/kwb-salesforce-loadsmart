@@ -116,8 +116,8 @@ public without sharing class ExceptionAlertDistribution {
             alert.recipients.add(load.Dispatcher__r.Email);
         }
         
-        alert.subject = buildEmailSubject(exception, load);
-        alert.body = buildEmailBody(exception, load);
+        alert.subject = buildEmailSubject(exc, load);
+        alert.body = buildEmailBody(exc, load);
         alert.channel = 'EMAIL';
         
         return alert.recipients.isEmpty() ? null : alert;
@@ -132,7 +132,7 @@ public without sharing class ExceptionAlertDistribution {
         alert.loadId = load.Id;
         alert.channel = 'SLACK';
         alert.slackChannel = getOpsSlackChannel(); // Get from settings
-        alert.slackMessage = buildSlackMessage(exception, load);
+        alert.slackMessage = buildSlackMessage(exc, load);
         
         return alert.slackMessage != null ? alert : null;
     }
@@ -146,7 +146,7 @@ public without sharing class ExceptionAlertDistribution {
         alert.loadId = load.Id;
         alert.channel = 'SMS';
         alert.smsNumber = load.Driver__r?.Phone; // Get from driver
-        alert.smsMessage = buildSMSMessage(exception, load);
+        alert.smsMessage = buildSMSMessage(exc, load);
         
         return String.isNotBlank(alert.smsNumber) && String.isNotBlank(alert.smsMessage) ? alert : null;
     }
@@ -202,7 +202,7 @@ public without sharing class ExceptionAlertDistribution {
     /**
      * Send email alerts
      */
-    @Future(callout=false)
+    // @future removed - non-primitive List param not allowed in @future
     private static void sendEmailAlerts(List<AlertMessage> alerts) {
         List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
         

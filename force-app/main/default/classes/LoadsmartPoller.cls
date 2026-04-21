@@ -205,27 +205,27 @@ public with sharing class LoadsmartPoller implements Database.Batchable<SObject>
             
             // Stops: pickup and delivery
             if (shipment.stops != null) {
-                for (LoadsmartShipmentDTO.LoadsmartStopDTO stop : shipment.stops) {
-                    if (String.isBlank(stop.planned_date)) {
+                for (LoadsmartShipmentDTO.LoadsmartStopDTO stopDto : shipment.stops) {
+                    if (String.isBlank(stopDto.planned_date)) {
                         continue;
                     }
                     
-                    DateTime plannedDateTime = DateTime.parse(stop.planned_date + 'T00:00:00Z');
+                    DateTime plannedDateTime = DateTime.parse(stopDto.planned_date + 'T00:00:00Z');
                     
-                    if ('pickup'.equalsIgnoreCase(stop.type)) {
-                        load.Shipper_Name__c = stop.location_name;
-                        load.Shipper_Address__c = stop.address;
-                        load.Shipper_City__c = stop.city;
-                        load.Shipper_State__c = stop.state;
-                        load.Shipper_Zip__c = stop.zipcode;
+                    if ('pickup'.equalsIgnoreCase(stopDto.type)) {
+                        load.Shipper_Name__c = stopDto.location_name;
+                        load.Shipper_Address__c = stopDto.address;
+                        load.Shipper_City__c = stopDto.city;
+                        load.Shipper_State__c = stopDto.state;
+                        load.Shipper_Zip__c = stopDto.zipcode;
                         load.Pickup_Window_Begin__c = plannedDateTime;
                         load.Pickup_Window_End__c = plannedDateTime.addHours(8);
-                    } else if ('delivery'.equalsIgnoreCase(stop.type)) {
-                        load.Receiver_Name__c = stop.location_name;
-                        load.Receiver_Address__c = stop.address;
-                        load.Receiver_City__c = stop.city;
-                        load.Receiver_State__c = stop.state;
-                        load.Receiver_Zip__c = stop.zipcode;
+                    } else if ('delivery'.equalsIgnoreCase(stopDto.type)) {
+                        load.Receiver_Name__c = stopDto.location_name;
+                        load.Receiver_Address__c = stopDto.address;
+                        load.Receiver_City__c = stopDto.city;
+                        load.Receiver_State__c = stopDto.state;
+                        load.Receiver_Zip__c = stopDto.zipcode;
                         load.Delivery_Window_Begin__c = plannedDateTime;
                         load.Delivery_Window_End__c = plannedDateTime.addHours(8);
                     }
@@ -248,9 +248,5 @@ public with sharing class LoadsmartPoller implements Database.Batchable<SObject>
         }
     }
     
-    @isTest
-    public static void testPolling() {
-        LoadsmartPoller poller = new LoadsmartPoller();
-        // Test would require mocking HTTP responses
-    }
+    // @isTest methods must be in @isTest classes - moved to LoadsmartPollerTest.cls
 }

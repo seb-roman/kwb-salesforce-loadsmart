@@ -34,10 +34,10 @@ public with sharing class ShipperLoadDetailController {
             
             // SECURITY: Check FLS access to required fields
             List<String> requiredFields = new List<String>{
-                'Id', 'Name', 'Shipper_Account__c', 'Pickup_City__c', 'Delivery_City__c',
-                'Status__c', 'Pickup_Date__c', 'Estimated_Delivery__c', 'Shipper_Rate__c',
-                'Equipment_Type__c', 'Equipment_Length__c', 'Weight__c', 'Commodity__c',
-                'Carrier__c', 'Is_Deleted__c', 'Pickup_Contact__c', 'Pickup_Company__c',
+                'Id', 'Name', 'Shipper__c', 'Shipper_City__c', 'Receiver_City__c',
+                'Status__c', 'Pickup_Date__c', 'Estimated_Delivery__c', 'Billing_Rate__c',
+                'Equipment_Type__c', 'Equipment_Length__c', 'Weight_lbs__c', 'Commodity__c',
+                'Carrier__c', 'IsDeleted', 'Pickup_Contact__c', 'Pickup_Company__c',
                 'Pickup_Address__c', 'Pickup_Postal_Code__c', 'Pickup_State__c', 'Pickup_Country__c',
                 'Delivery_Contact__c', 'Delivery_Company__c', 'Delivery_Address__c',
                 'Delivery_Postal_Code__c', 'Delivery_State__c', 'Delivery_Country__c',
@@ -57,10 +57,10 @@ public with sharing class ShipperLoadDetailController {
 
             // Query load with strict row-level security
             List<Load__c> loads = [
-                SELECT Id, Name, Shipper_Account__c, Pickup_City__c, Delivery_City__c,
-                       Status__c, Pickup_Date__c, Estimated_Delivery__c, Shipper_Rate__c,
-                       Equipment_Type__c, Equipment_Length__c, Weight__c, Commodity__c,
-                       Carrier__c, Is_Deleted__c, Pickup_Contact__c, Pickup_Company__c,
+                SELECT Id, Name, Shipper__c, Shipper_City__c, Receiver_City__c,
+                       Status__c, Pickup_Date__c, Estimated_Delivery__c, Billing_Rate__c,
+                       Equipment_Type__c, Equipment_Length__c, Weight_lbs__c, Commodity__c,
+                       Carrier__c, IsDeleted, Pickup_Contact__c, Pickup_Company__c,
                        Pickup_Address__c, Pickup_Postal_Code__c, Pickup_State__c, Pickup_Country__c,
                        Delivery_Contact__c, Delivery_Company__c, Delivery_Address__c,
                        Delivery_Postal_Code__c, Delivery_State__c, Delivery_Country__c,
@@ -68,8 +68,8 @@ public with sharing class ShipperLoadDetailController {
                        Rate_Confirmation_PDF__c, Fuel_Surcharge__c, Notes__c
                 FROM Load__c
                 WHERE Id = :loadId 
-                  AND Shipper_Account__c = :shipperAccountId
-                  AND Is_Deleted__c = false
+                  AND Shipper__c = :shipperAccountId
+                  AND IsDeleted = false
                 LIMIT 1
             ];
 
@@ -84,11 +84,12 @@ public with sharing class ShipperLoadDetailController {
             try {
                 if (SecurityUtil.hasCRUDAccess(Stop__c.SObjectType, 'READ')) {
                     stops = [
-                        SELECT Id, Stop_Number__c, Stop_Type__c, Location_City__c, Location_Address__c,
-                               Arrival_Time__c, Departure_Time__c, Status__c
+                        SELECT Id, Sequence__c, Stop_Type__c,
+                               Account__r.BillingCity, Account__r.BillingStreet, Account__r.BillingState,
+                               Actual_Arrival__c, Actual_Departure__c, Appointment_Date__c
                         FROM Stop__c
                         WHERE Load__c = :loadId
-                        ORDER BY Stop_Number__c ASC
+                        ORDER BY Sequence__c ASC
                     ];
                 }
             } catch (SObjectException e) {
@@ -100,7 +101,7 @@ public with sharing class ShipperLoadDetailController {
             try {
                 if (SecurityUtil.hasCRUDAccess(Invoice__c.SObjectType, 'READ')) {
                     invoices = [
-                        SELECT Id, Name, Invoice_Amount__c, Invoice_Status__c, Issue_Date__c
+                        SELECT Id, Name, Total_Amount__c, Status__c, Invoice_Date__c
                         FROM Invoice__c
                         WHERE Load__c = :loadId
                     ];
@@ -175,7 +176,7 @@ public with sharing class ShipperLoadDetailController {
                 SELECT Id, Carrier__c
                 FROM Load__c
                 WHERE Id = :loadId
-                  AND Shipper_Account__c = :shipperAccountId
+                  AND Shipper__c = :shipperAccountId
                 LIMIT 1
             ];
 
@@ -190,7 +191,7 @@ public with sharing class ShipperLoadDetailController {
             }
 
             List<Carrier__c> carriers = [
-                SELECT Id, Name, MC_DOT_Number__c, Phone__c, Email__c
+                SELECT Id, Name, MC_Number__c, Phone__c, Email__c
                 FROM Carrier__c
                 WHERE Id = :carrierId
                 LIMIT 1
@@ -203,7 +204,7 @@ public with sharing class ShipperLoadDetailController {
             Carrier__c carrier = carriers[0];
             CarrierInfo info = new CarrierInfo();
             info.carrierName = carrier.Name;
-            info.dotNumber = carrier.MC_DOT_Number__c;
+            info.dotNumber = carrier.MC_Number__c;
             info.phone = carrier.Phone__c;
             info.email = carrier.Email__c;
 
@@ -246,8 +247,10 @@ public with sharing class ShipperLoadDetailController {
             return 'Delivery window closed';
         }
 
-        Long daysDiff = millisDiff / (24 * 60 * 60 * 1000);
-        Long hoursDiff = (millisDiff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000);
+        Long msPerDay = 24L * 60L * 60L * 1000L;
+        Long msPerHour = 60L * 60L * 1000L;
+        Long daysDiff = millisDiff / msPerDay;
+        Long hoursDiff = (millisDiff - (daysDiff * msPerDay)) / msPerHour;
 
         String countdown = '';
         if (daysDiff > 0) {

@@ -48,11 +48,11 @@ public class VAL_Delivery_After_Pickup_Test {
         Account shipper = [SELECT Id FROM Account WHERE Name = 'Test Shipper' LIMIT 1];
         Account receiver = [SELECT Id FROM Account WHERE Name = 'Test Receiver' LIMIT 1];
         
-        DateTime time = System.now().addDays(5);
+        DateTime deliveryTime = System.now().addDays(5);
         
         Load__c load = new Load__c(
-            Pickup_Window_Begin__c = time,
-            Estimated_Delivery_DateTime__c = time, // Same time
+            Pickup_Window_Begin__c = deliveryTime,
+            Estimated_Delivery_DateTime__c = deliveryTime, // Same time
             Shipper__c = shipper.Id,
             Receiver__c = receiver.Id,
             Equipment_Type__c = 'Van',

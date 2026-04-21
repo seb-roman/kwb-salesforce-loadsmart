@@ -144,7 +144,7 @@ public class KWBLoadsTest {
      * Test Loadsmart Sync flag
      */
     @isTest
-    public static void testLoadsmart SyncTracking() {
+    public static void testLoadsmartSyncTracking() {
         Load__c load = new Load__c();
         load.Loadsmart_Shipment_ID__c = 'test-shipment-uuid-003';
         load.Order_Number__c = 'ORDER-88888';
@@ -175,7 +175,7 @@ public class KWBLoadsTest {
      * Test unique Loadsmart Shipment ID
      */
     @isTest
-    public static void testLoadsmart ShipmentIDUnique() {
+    public static void testLoadsmartShipmentIDUnique() {
         Load__c load1 = new Load__c();
         load1.Loadsmart_Shipment_ID__c = 'unique-uuid-only-once';
         load1.Order_Number__c = 'ORDER-11111';

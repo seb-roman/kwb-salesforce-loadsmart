@@ -81,10 +81,9 @@ public with sharing class ExceptionDetectionEngineTest {
         Load__c load = createTestLoad('LOAD-003');
         Stop__c stop = new Stop__c(
             Load__c = load.Id,
-            Name = 'Warehouse A',
-            Type__c = 'DELIVERY',
-            Arrival_DateTime__c = System.now().addHours(-5).addMinutes(-30),
-            Departure_DateTime__c = System.now(),
+            Stop_Type__c = 'DELIVERY',
+            Actual_Arrival__c = System.now().addHours(-5).addMinutes(-30),
+            Actual_Departure__c = System.now(),
             Sequence__c = 1
         );
         insert stop;
@@ -108,8 +107,7 @@ public with sharing class ExceptionDetectionEngineTest {
         Load__c load = createTestLoad('LOAD-004');
         Stop__c stop = new Stop__c(
             Load__c = load.Id,
-            Name = 'Customer Location',
-            Type__c = 'DELIVERY',
+            Stop_Type__c = 'DELIVERY',
             ETA__c = System.now().addDays(3), // 3 days from now
             Planned_End__c = System.now().addDays(1), // Planned 1 day from now
             Sequence__c = 2
@@ -280,8 +278,7 @@ public with sharing class ExceptionDetectionEngineTest {
         // Create stop with minimal data
         Stop__c stop = new Stop__c(
             Load__c = load.Id,
-            Name = 'Minimal Stop',
-            Type__c = 'DELIVERY',
+            Stop_Type__c = 'DELIVERY',
             Sequence__c = 1
             // All timestamps null
         );
@@ -334,9 +331,9 @@ public with sharing class ExceptionDetectionEngineTest {
         Load__c load = new Load__c(
             Name = name,
             Status__c = 'IN_TRANSIT',
-            Pickup_Window_Start__c = System.now().addHours(-2),
+            Pickup_Window_Begin__c = System.now().addHours(-2),
             Pickup_Window_End__c = System.now().addHours(2),
-            Delivery_Window_Start__c = System.now().addHours(4),
+            Delivery_Window_Begin__c = System.now().addHours(4),
             Delivery_Window_End__c = System.now().addHours(8)
         );
         insert load;
@@ -346,10 +343,9 @@ public with sharing class ExceptionDetectionEngineTest {
     private static Stop__c createTestStop(Id loadId, String type, DateTime arrival, DateTime planned_end) {
         Stop__c stop = new Stop__c(
             Load__c = loadId,
-            Name = type + ' Stop',
-            Type__c = type,
-            Arrival_DateTime__c = arrival,
-            Planned_End__c = planned_end,
+            Stop_Type__c = type,
+            Actual_Arrival__c = arrival,
+            Window_End__c = planned_end,
             Sequence__c = 1
         );
         insert stop;

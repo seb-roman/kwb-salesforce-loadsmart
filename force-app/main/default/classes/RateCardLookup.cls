@@ -19,36 +19,36 @@ public class RateCardLookup {
         try {
             // Priority 1: Check shipper-specific rate (origin + destination + equipment)
             List<RateCard__c> shipper_specific = [
-                SELECT Amount__c, Priority__c
+                SELECT Base_Rate__c, Priority__c
                 FROM RateCard__c
                 WHERE Account__c = :accountId
                     AND Origin__c = :origin
                     AND Destination__c = :destination
                     AND Equipment_Type__c = :equipment
-                    AND Is_Active__c = true
+                    AND Active__c = true
                 ORDER BY Priority__c ASC, CreatedDate DESC
                 LIMIT 1
             ];
             
             if (!shipper_specific.isEmpty()) {
-                return shipper_specific[0].Amount__c;
+                return shipper_specific[0].Base_Rate__c;
             }
             
             // Priority 2: Check default rate (equipment only)
             List<RateCard__c> default_rate = [
-                SELECT Amount__c, Priority__c
+                SELECT Base_Rate__c, Priority__c
                 FROM RateCard__c
                 WHERE Account__c = :accountId
                     AND Origin__c = null
                     AND Destination__c = null
                     AND Equipment_Type__c = :equipment
-                    AND Is_Active__c = true
+                    AND Active__c = true
                 ORDER BY Priority__c ASC, CreatedDate DESC
                 LIMIT 1
             ];
             
             if (!default_rate.isEmpty()) {
-                return default_rate[0].Amount__c;
+                return default_rate[0].Base_Rate__c;
             }
             
             // No rate found
@@ -70,7 +70,7 @@ public class RateCardLookup {
         List<String> errors = new List<String>();
         
         // Validate amount
-        if (rateCard.Amount__c == null || rateCard.Amount__c <= 0) {
+        if (rateCard.Base_Rate__c == null || rateCard.Base_Rate__c <= 0) {
             errors.add('Rate must be greater than 0');
         }
         
@@ -96,8 +96,8 @@ public class RateCardLookup {
     public static List<RateCard__c> getRateCardsForAccount(String accountId) {
         try {
             return [
-                SELECT Id, Name, Amount__c, Priority__c, Equipment_Type__c, 
-                       Origin__c, Destination__c, Is_Active__c
+                SELECT Id, Name, Base_Rate__c, Priority__c, Equipment_Type__c, 
+                       Origin__c, Destination__c, Active__c
                 FROM RateCard__c
                 WHERE Account__c = :accountId
                 ORDER BY Priority__c ASC, Equipment_Type__c ASC
@@ -112,20 +112,20 @@ public class RateCardLookup {
      * Look up and apply rates to a load
      */
     public static void lookupAndApplyRates(Load__c load) {
-        if (load.Shipper_Account__c == null || load.Equipment_Type__c == null) {
+        if (load.Shipper__c == null || load.Equipment_Type__c == null) {
             return;
         }
         
         // Query rate based on origin, destination, equipment
         Decimal rate = queryRateCard(
-            load.Origin_State__c,
-            load.Destination_State__c,
+            load.Shipper_State__c,
+            load.Receiver_State__c,
             load.Equipment_Type__c,
-            String.valueOf(load.Shipper_Account__c)
+            String.valueOf(load.Shipper__c)
         );
         
         if (rate != null) {
-            load.Shipper_Rate__c = rate;
+            load.Billing_Rate__c = rate;
         }
     }
 }

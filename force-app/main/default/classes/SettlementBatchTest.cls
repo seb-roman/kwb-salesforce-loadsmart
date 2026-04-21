@@ -30,10 +30,10 @@ private class SettlementBatchTest {
         for (Integer i = 0; i < 5; i++) {
             Load__c load = new Load__c();
             load.Name = 'Load-C1-' + i;
-            load.Assigned_Carrier__c = carrier1.Id;
+            load.Carrier__c = carrier1.Id;
             load.Carrier_Rate__c = 1000 + (i * 100);
-            load.Invoice_Status__c = 'Invoiced';
-            load.Settlement_Status__c = 'Not_Settled';
+            load.Status__c = 'Invoiced';
+            load.Status__c = 'Not_Settled';
             loads.add(load);
         }
         
@@ -41,10 +41,10 @@ private class SettlementBatchTest {
         for (Integer i = 0; i < 3; i++) {
             Load__c load = new Load__c();
             load.Name = 'Load-C2-' + i;
-            load.Assigned_Carrier__c = carrier2.Id;
+            load.Carrier__c = carrier2.Id;
             load.Carrier_Rate__c = 800 + (i * 50);
-            load.Invoice_Status__c = 'Invoiced';
-            load.Settlement_Status__c = 'Not_Settled';
+            load.Status__c = 'Invoiced';
+            load.Status__c = 'Not_Settled';
             loads.add(load);
         }
         
@@ -71,7 +71,7 @@ private class SettlementBatchTest {
         Settlement__c existing = new Settlement__c();
         existing.Carrier__c = carrier1.Id;
         existing.Settlement_Period_Start__c = Date.today().addDays(-1);
-        existing.Settlement_Status__c = 'Pending';
+        existing.Status__c = 'Pending';
         existing.Gross_Amount__c = 5000;
         insert existing;
         
@@ -107,8 +107,8 @@ private class SettlementBatchTest {
         
         // Assert
         List<Load__c> loads = [
-            SELECT Settlement_Status__c FROM Load__c
-            WHERE Settlement_Status__c = 'Pending'
+            SELECT Status__c FROM Load__c
+            WHERE Status__c = 'Pending'
         ];
         System.assertEquals(8, loads.size(), 'Should update all 8 loads to Pending');
     }
@@ -172,10 +172,10 @@ private class SettlementBatchTest {
         Account carrier1 = [SELECT Id FROM Account WHERE Name = 'Carrier 1' LIMIT 1];
         Load__c unsettledLoad = new Load__c();
         unsettledLoad.Name = 'Unsettled Load';
-        unsettledLoad.Assigned_Carrier__c = carrier1.Id;
+        unsettledLoad.Carrier__c = carrier1.Id;
         unsettledLoad.Carrier_Rate__c = 5000;
-        unsettledLoad.Invoice_Status__c = 'Draft'; // Not invoiced
-        unsettledLoad.Settlement_Status__c = 'Not_Settled';
+        unsettledLoad.Status__c = 'Draft'; // Not invoiced
+        unsettledLoad.Status__c = 'Not_Settled';
         insert unsettledLoad;
         
         // Act

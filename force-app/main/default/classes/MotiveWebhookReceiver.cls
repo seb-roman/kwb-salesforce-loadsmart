@@ -118,8 +118,8 @@ global with sharing class MotiveWebhookReceiver {
     private static Boolean validateSignature(RestRequest req) {
         try {
             // Get signature and timestamp from headers
-            String signature = req.getHeader(WEBHOOK_SIGNATURE_HEADER);
-            String timestamp = req.getHeader(WEBHOOK_TIMESTAMP_HEADER);
+            String signature = req.headers.get(WEBHOOK_SIGNATURE_HEADER);
+            String timestamp = req.headers.get(WEBHOOK_TIMESTAMP_HEADER);
             String requestBody = req.requestBody.toString();
             
             if (String.isEmpty(signature) || String.isEmpty(timestamp)) {
@@ -154,21 +154,9 @@ global with sharing class MotiveWebhookReceiver {
      * @return the webhook secret, or empty string if not configured
      */
     private static String getWebhookSecret() {
-        try {
-            // Query MotiveConfig__c custom setting (stored at org level)
-            List<MotiveConfig__c> configs = [
-                SELECT Webhook_Secret__c FROM MotiveConfig__c LIMIT 1
-            ];
-            
-            if (configs.isEmpty()) {
-                return '';
-            }
-            
-            return configs[0].Webhook_Secret__c ?? '';
-        } catch (Exception e) {
-            logWarning('Error retrieving MotiveConfig: ' + e.getMessage());
-            return '';
-        }
+        // TODO: Phase 2 - MotiveConfig__c custom setting not yet deployed
+        // Return empty string so signature validation fails gracefully
+        return '';
     }
     
     /**

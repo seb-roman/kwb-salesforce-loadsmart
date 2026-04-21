@@ -66,7 +66,7 @@ public with sharing class ExceptionDashboardController {
                 FROM Exception__c
                 WHERE Status__c = 'Open'
                 GROUP BY Exception_Type__c
-                ORDER BY cnt DESC
+                ORDER BY COUNT(Id) DESC
             ];
             
             metrics.exceptionsByType = new List<ChartDataPoint>();
@@ -111,29 +111,25 @@ public with sharing class ExceptionDashboardController {
             sortOrder = String.isBlank(sortOrder) ? 'DESC' : sortOrder.toUpperCase();
             statusFilter = String.isBlank(statusFilter) ? 'Open' : statusFilter;
             
-            // Build WHERE clause
-            String whereClause = 'WHERE Status__c = :statusFilter';
-            Map<String, Object> bindParams = new Map<String, Object>();
-            bindParams.put('statusFilter', statusFilter);
+            // Build WHERE clause (using escaped values for dynamic SOQL)
+            String safeStatus = String.escapeSingleQuotes(statusFilter);
+            String whereClause = 'WHERE Status__c = \'' + safeStatus + '\'';
             
             if (String.isNotBlank(severityFilter)) {
-                whereClause += ' AND Severity__c = :severity';
-                bindParams.put('severity', severityFilter);
+                whereClause += ' AND Severity__c = \'' + String.escapeSingleQuotes(severityFilter) + '\'';
             }
             
             if (String.isNotBlank(typeFilter)) {
-                whereClause += ' AND Exception_Type__c = :excType';
-                bindParams.put('excType', typeFilter);
+                whereClause += ' AND Exception_Type__c = \'' + String.escapeSingleQuotes(typeFilter) + '\'';
             }
             
             if (String.isNotBlank(loadFilter)) {
-                whereClause += ' AND Load__r.Name LIKE :loadName';
-                bindParams.put('loadName', '%' + loadFilter + '%');
+                whereClause += ' AND Load__r.Name LIKE \'%' + String.escapeSingleQuotes(loadFilter) + '%\'';
             }
             
-            // Get total count
+            // Get total count (Database.countQuery takes only one String param)
             String countQuery = 'SELECT COUNT() FROM Exception__c ' + whereClause;
-            Integer totalRecords = Database.countQuery(countQuery, bindParams);
+            Integer totalRecords = Database.countQuery(countQuery);
             
             // Calculate offset
             Integer offset = (pageNumber - 1) * PAGE_SIZE;
@@ -294,9 +290,10 @@ public with sharing class ExceptionDashboardController {
             
             // Exception type options
             AggregateResult[] types = [
-                SELECT DISTINCT Exception_Type__c
+                SELECT Exception_Type__c
                 FROM Exception__c
                 WHERE Status__c = 'Open'
+                GROUP BY Exception_Type__c
                 ORDER BY Exception_Type__c
             ];
             

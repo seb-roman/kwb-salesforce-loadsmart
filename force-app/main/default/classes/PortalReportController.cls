@@ -8,7 +8,7 @@
  * @version 1.0
  * @date April 2, 2026
  */
-with sharing class PortalReportController {
+public with sharing class PortalReportController {
     
     /**
      * OnTimeDeliveryReport
@@ -121,7 +121,7 @@ with sharing class PortalReportController {
             List<Load__c> deliveredLoads = [
                 SELECT Id, Actual_Delivery_Time__c, Delivery_Window_End__c
                 FROM Load__c
-                WHERE (Shipper_Account__c = :accountId OR Assigned_Carrier__c = :accountId)
+                WHERE (Shipper__c = :accountId OR Carrier__c = :accountId)
                 AND Status__c = 'DELIVERED'
                 AND CreatedDate = LAST_N_DAYS:30
             ];
@@ -164,30 +164,40 @@ with sharing class PortalReportController {
             
             String accountId = getCurrentAccountId();
             
-            // Aggregate query for cost metrics by distance range
-            List<AggregateResult> results = [
-                SELECT ROUND(Distance__c / 100, 0) * 100 distance_bucket,
-                       COUNT(Id) load_count,
-                       AVG(Cost_Per_Mile__c) avg_cost
+            // Query loads and bucket by distance in Apex (SOQL doesn't support ROUND in GROUP BY)
+            List<Load__c> rawLoads = [
+                SELECT Id, Distance_Miles__c, Cost_Per_Mile__c
                 FROM Load__c
-                WHERE (Shipper_Account__c = :accountId OR Assigned_Carrier__c = :accountId)
+                WHERE (Shipper__c = :accountId OR Carrier__c = :accountId)
                 AND Status__c = 'DELIVERED'
                 AND CreatedDate = LAST_N_DAYS:30
-                GROUP BY ROUND(Distance__c / 100, 0) * 100
-                ORDER BY distance_bucket ASC
             ];
+            
+            Map<Integer, Integer> loadCountByBucket = new Map<Integer, Integer>();
+            Map<Integer, Decimal> costSumByBucket = new Map<Integer, Decimal>();
+            
+            for (Load__c ld : rawLoads) {
+                Decimal dist = ld.Distance_Miles__c != null ? ld.Distance_Miles__c : 0;
+                Integer bucket = (Integer)(Math.floor(dist / 100) * 100);
+                if (!loadCountByBucket.containsKey(bucket)) {
+                    loadCountByBucket.put(bucket, 0);
+                    costSumByBucket.put(bucket, 0);
+                }
+                loadCountByBucket.put(bucket, loadCountByBucket.get(bucket) + 1);
+                costSumByBucket.put(bucket, costSumByBucket.get(bucket) + (ld.Cost_Per_Mile__c != null ? ld.Cost_Per_Mile__c : 0));
+            }
             
             List<CostBucket> buckets = new List<CostBucket>();
             Decimal totalCost = 0;
             Integer totalLoads = 0;
             
-            for (AggregateResult result : results) {
+            List<Integer> sortedKeys = new List<Integer>(loadCountByBucket.keySet());
+            sortedKeys.sort();
+            for (Integer bkt : sortedKeys) {
                 CostBucket bucket = new CostBucket();
-                Decimal minDistance = Decimal.valueOf(String.valueOf(result.get('distance_bucket')));
-                bucket.distanceRange = Math.round(minDistance).intValue() + ' - ' + 
-                                       Math.round(minDistance + 100).intValue() + ' mi';
-                bucket.loadCount = (Integer)result.get('load_count');
-                bucket.averageCost = (Decimal)result.get('avg_cost');
+                bucket.distanceRange = bkt + ' - ' + (bkt + 100) + ' mi';
+                bucket.loadCount = loadCountByBucket.get(bkt);
+                bucket.averageCost = bucket.loadCount > 0 ? costSumByBucket.get(bkt) / bucket.loadCount : 0;
                 
                 buckets.add(bucket);
                 totalLoads += bucket.loadCount;
@@ -224,9 +234,9 @@ with sharing class PortalReportController {
             String accountId = getCurrentAccountId();
             
             List<Load__c> loads = [
-                SELECT Id, Actual_Pickup_Time__c, Actual_Delivery_Time__c, Distance__c
+                SELECT Id, Actual_Pickup_Time__c, Actual_Delivery_Time__c, Distance_Miles__c
                 FROM Load__c
-                WHERE (Shipper_Account__c = :accountId OR Assigned_Carrier__c = :accountId)
+                WHERE (Shipper__c = :accountId OR Carrier__c = :accountId)
                 AND Status__c = 'DELIVERED'
                 AND CreatedDate = LAST_N_DAYS:30
             ];
@@ -242,8 +252,8 @@ with sharing class PortalReportController {
                     Decimal hours = Decimal.valueOf(timeDiffMs) / (1000 * 60 * 60);
                     totalTransitHours += hours;
                     
-                    if (load.Distance__c != null) {
-                        totalMiles += load.Distance__c;
+                    if (load.Distance_Miles__c != null) {
+                        totalMiles += load.Distance_Miles__c;
                     }
                     loadCount++;
                 }
@@ -283,7 +293,7 @@ with sharing class PortalReportController {
             List<Load__c> loads = [
                 SELECT Id, CreatedDate, Actual_Delivery_Time__c, Delivery_Window_End__c
                 FROM Load__c
-                WHERE (Shipper_Account__c = :accountId OR Assigned_Carrier__c = :accountId)
+                WHERE (Shipper__c = :accountId OR Carrier__c = :accountId)
                 AND Status__c = 'DELIVERED'
                 AND CreatedDate = LAST_N_DAYS:30
             ];
@@ -357,7 +367,7 @@ with sharing class PortalReportController {
             List<Load__c> loads = [
                 SELECT CreatedDate
                 FROM Load__c
-                WHERE (Shipper_Account__c = :accountId OR Assigned_Carrier__c = :accountId)
+                WHERE (Shipper__c = :accountId OR Carrier__c = :accountId)
                 AND CreatedDate = LAST_N_DAYS:30
             ];
             

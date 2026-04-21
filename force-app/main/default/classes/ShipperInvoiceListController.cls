@@ -44,8 +44,8 @@ public with sharing class ShipperInvoiceListController {
             
             // SECURITY: Check FLS access to required fields
             List<String> requiredFields = new List<String>{
-                'Id', 'Name', 'Shipper_Account__c', 'Invoice_Amount__c',
-                'Invoice_Status__c', 'Issue_Date__c', 'Due_Date__c', 'Total_Paid__c',
+                'Id', 'Name', 'Shipper_Account__c', 'Total_Amount__c',
+                'Status__c', 'Invoice_Date__c', 'Due_Date__c', 'Total_Paid__c',
                 'Load__c'
             };
             SecurityUtil.enforceAccess(
@@ -67,14 +67,14 @@ public with sharing class ShipperInvoiceListController {
             String filterClause = buildInvoiceFilterWhereClause(statusFilter, dateFrom, dateTo);
 
             // Build SOQL query
-            String query = 'SELECT Id, Name, Shipper_Account__c, Invoice_Amount__c, ' +
-                           'Invoice_Status__c, Issue_Date__c, Due_Date__c, Total_Paid__c, ' +
+            String query = 'SELECT Id, Name, Shipper_Account__c, Total_Amount__c, ' +
+                           'Status__c, Invoice_Date__c, Due_Date__c, Total_Paid__c, ' +
                            'Load__c, Load__r.Name ' +
                            'FROM Invoice__c ' +
                            'WHERE Shipper_Account__c = :shipperAccountId ' + filterClause;
 
             // Add sorting and pagination
-            query += ' ORDER BY Issue_Date__c DESC ';
+            query += ' ORDER BY Invoice_Date__c DESC ';
             query += ' LIMIT :pageSize OFFSET ' + ((pageNumber - 1) * pageSize);
 
             List<Invoice__c> invoices = Database.query(query);
@@ -114,11 +114,11 @@ public with sharing class ShipperInvoiceListController {
         if (String.isNotBlank(statusFilter) && statusFilter != 'All') {
             // Check if invoice is overdue (special case, not a picklist value)
             if (statusFilter == 'Overdue') {
-                whereClause += ' AND Due_Date__c < TODAY() AND Invoice_Status__c != \'Paid\' ';
+                whereClause += ' AND Due_Date__c < TODAY AND Status__c != \'Paid\' ';
             } else {
                 // Validate status value against picklist
-                if (SecurityUtil.isValidPicklistValue(Invoice__c.Invoice_Status__c, statusFilter)) {
-                    whereClause += ' AND Invoice_Status__c = :statusFilter ';
+                if (SecurityUtil.isValidPicklistValue(Invoice__c.Status__c, statusFilter)) {
+                    whereClause += ' AND Status__c = :statusFilter ';
                 }
             }
         }
@@ -126,11 +126,11 @@ public with sharing class ShipperInvoiceListController {
         // Date filters are safe (Date.valueOf() will throw if invalid)
         if (String.isNotBlank(dateFrom)) {
             Date startDate = Date.valueOf(dateFrom);
-            whereClause += ' AND Issue_Date__c >= :startDate ';
+            whereClause += ' AND Invoice_Date__c >= :startDate ';
         }
         if (String.isNotBlank(dateTo)) {
             Date endDate = Date.valueOf(dateTo);
-            whereClause += ' AND Issue_Date__c <= :endDate ';
+            whereClause += ' AND Invoice_Date__c <= :endDate ';
         }
 
         return whereClause;
@@ -153,9 +153,9 @@ public with sharing class ShipperInvoiceListController {
             
             // SECURITY: Check FLS access to invoice fields
             List<String> invoiceFields = new List<String>{
-                'Id', 'Name', 'Shipper_Account__c', 'Invoice_Amount__c', 'Invoice_Status__c',
-                'Issue_Date__c', 'Due_Date__c', 'Total_Paid__c', 'Balance_Due__c',
-                'Tax_Amount__c', 'Subtotal__c', 'Fuel_Surcharge__c', 'Load__c', 'Notes__c'
+                'Id', 'Name', 'Shipper_Account__c', 'Total_Amount__c', 'Status__c',
+                'Invoice_Date__c', 'Due_Date__c', 'Total_Paid__c', 'Balance_Due__c',
+                'Tax_Amount__c', 'Subtotal__c', 'Fuel_Surcharge__c', 'Load__c'
             };
             SecurityUtil.enforceAccess(
                 SecurityUtil.hasFieldLevelSecurityAccess(Invoice__c.SObjectType, invoiceFields, 'READ'),
@@ -166,10 +166,9 @@ public with sharing class ShipperInvoiceListController {
 
             // Query invoice with row-level security
             List<Invoice__c> invoices = [
-                SELECT Id, Name, Shipper_Account__c, Invoice_Amount__c, Invoice_Status__c,
-                       Issue_Date__c, Due_Date__c, Total_Paid__c, Balance_Due__c,
-                       Tax_Amount__c, Subtotal__c, Fuel_Surcharge__c, Load__c, Load__r.Name,
-                       Notes__c
+                SELECT Id, Name, Shipper_Account__c, Total_Amount__c, Status__c,
+                       Invoice_Date__c, Due_Date__c, Total_Paid__c, Balance_Due__c,
+                       Tax_Amount__c, Subtotal__c, Fuel_Surcharge__c, Load__c, Load__r.Name
                 FROM Invoice__c
                 WHERE Id = :invoiceId
                   AND Shipper_Account__c = :shipperAccountId
@@ -187,7 +186,7 @@ public with sharing class ShipperInvoiceListController {
             try {
                 if (SecurityUtil.hasCRUDAccess(InvoiceLineItem__c.SObjectType, 'READ')) {
                     lineItems = [
-                        SELECT Id, Description__c, Amount__c, Type__c
+                        SELECT Id, Description__c, Amount__c, Line_Item_Type__c
                         FROM InvoiceLineItem__c
                         WHERE Invoice__c = :invoiceId
                         ORDER BY CreatedDate ASC
@@ -197,20 +196,8 @@ public with sharing class ShipperInvoiceListController {
                 System.debug('InvoiceLineItem__c object not accessible: ' + e.getMessage());
             }
 
-            // Get payment history - graceful error handling
-            List<Payment__c> payments = new List<Payment__c>();
-            try {
-                if (SecurityUtil.hasCRUDAccess(Payment__c.SObjectType, 'READ')) {
-                    payments = [
-                        SELECT Id, Payment_Date__c, Amount__c, Payment_Method__c
-                        FROM Payment__c
-                        WHERE Invoice__c = :invoiceId
-                        ORDER BY Payment_Date__c DESC
-                    ];
-                }
-            } catch (SObjectException e) {
-                System.debug('Payment__c object not accessible: ' + e.getMessage());
-            }
+            // TODO: Phase 2 - Payment__c not yet deployed
+            List<SObject> payments = new List<SObject>();
 
             InvoiceDetail detail = new InvoiceDetail();
             detail.invoice = invoice;
@@ -235,6 +222,7 @@ public with sharing class ShipperInvoiceListController {
      * @param details - Additional details
      * @return Dispute__c record ID
      */
+    // TODO: Phase 2 - submitDisputeRequest (Dispute__c not yet deployed)
     @AuraEnabled
     public static String submitDisputeRequest(
         String invoiceId,
@@ -242,60 +230,7 @@ public with sharing class ShipperInvoiceListController {
         Decimal amount,
         String details
     ) {
-        try {
-            // SECURITY: Check CRUD access to Invoice__c (to verify invoice exists and is readable)
-            SecurityUtil.enforceAccess(
-                SecurityUtil.hasCRUDAccess(Invoice__c.SObjectType, 'READ'),
-                'You do not have permission to access invoices'
-            );
-
-            // SECURITY: Check CRUD access to Dispute__c before creating
-            SecurityUtil.enforceAccess(
-                SecurityUtil.hasCRUDAccess(Dispute__c.SObjectType, 'CREATE'),
-                'You do not have permission to submit disputes'
-            );
-
-            // SECURITY: Check FLS access to all Dispute__c fields being set
-            List<String> disputeFields = new List<String>{
-                'Invoice__c', 'Dispute_Reason__c', 'Disputed_Amount__c', 'Details__c', 'Status__c', 'Submitted_Date__c'
-            };
-            SecurityUtil.enforceAccess(
-                SecurityUtil.hasFieldLevelSecurityAccess(Dispute__c.SObjectType, disputeFields, 'UPDATE'),
-                'You do not have permission to set dispute fields'
-            );
-
-            String shipperAccountId = ShipperLoadListController.getShipperAccountId();
-
-            // Verify invoice belongs to shipper
-            List<Invoice__c> invoices = [
-                SELECT Id
-                FROM Invoice__c
-                WHERE Id = :invoiceId
-                  AND Shipper_Account__c = :shipperAccountId
-                LIMIT 1
-            ];
-
-            if (invoices.isEmpty()) {
-                throw new AuraHandledException('Invoice not found or access denied');
-            }
-
-            // Create dispute record
-            Dispute__c dispute = new Dispute__c(
-                Invoice__c = invoiceId,
-                Dispute_Reason__c = reason,
-                Disputed_Amount__c = amount,
-                Details__c = details,
-                Status__c = 'New',
-                Submitted_Date__c = System.now()
-            );
-
-            insert dispute;
-
-            return dispute.Id;
-
-        } catch (Exception e) {
-            throw new AuraHandledException('Error submitting dispute: ' + e.getMessage());
-        }
+        throw new AuraHandledException('Dispute submission not yet available (Phase 2)');
     }
 
     /**
@@ -305,7 +240,7 @@ public with sharing class ShipperInvoiceListController {
     public static List<String> getInvoiceStatusOptions() {
         List<String> statuses = new List<String>();
         try {
-            Schema.DescribeFieldResult fieldResult = Invoice__c.Invoice_Status__c.getDescribe();
+            Schema.DescribeFieldResult fieldResult = Invoice__c.Status__c.getDescribe();
             List<Schema.PicklistEntry> picklistEntries = fieldResult.getPicklistValues();
             
             for (Schema.PicklistEntry entry : picklistEntries) {
@@ -344,6 +279,6 @@ public with sharing class ShipperInvoiceListController {
         @AuraEnabled
         public List<InvoiceLineItem__c> lineItems;
         @AuraEnabled
-        public List<Payment__c> payments;
+        public List<SObject> payments; // TODO: Phase 2 - Payment__c
     }
 }

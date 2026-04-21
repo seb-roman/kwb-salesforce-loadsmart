@@ -121,7 +121,11 @@ public with sharing class CarrierAssignmentEngine {
             
             // Populate top 3
             if (!viableCarriers.isEmpty()) {
-                result.topCarriers = viableCarriers.subList(0, Math.min(MAX_RESULTS, viableCarriers.size()));
+                Integer maxIdx = Math.min(MAX_RESULTS, viableCarriers.size());
+                result.topCarriers = new List<CarrierScoreInfo>();
+                for (Integer i = 0; i < maxIdx; i++) {
+                    result.topCarriers.add(viableCarriers[i]);
+                }
                 result.hasViableCarriers = true;
             } else {
                 // Fallback: no viable carriers

@@ -419,8 +419,8 @@ public class TrackingIngestJobTest {
     
     private static Equipment__c createTestEquipment(String motiveVehicleId, String loadId) {
         Equipment__c equipment = new Equipment__c(
-            Name = motiveVehicleId,
-            Load__c = loadId,
+            // Name is auto-generated
+            Current_Load__c = loadId, // Use Current_Load__c instead of Load__c
             Motive_Vehicle_ID__c = motiveVehicleId,
             Equipment_Type__c = 'Truck'
         );

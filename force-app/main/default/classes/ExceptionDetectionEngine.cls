@@ -93,8 +93,8 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
                 
                 Exception__c exc = checkRule(rule, load, stops, trackingEvents);
                 
-                if (exception != null && !isDuplicateException(exception)) {
-                    exceptionsToCreate.add(exception);
+                if (exc != null && !isDuplicateException(exc)) {
+                    exceptionsToCreate.add(exc);
                 }
             }
         }
@@ -114,30 +114,30 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
         Exception__c exc = null;
         
         switch on rule.ruleType {
-            when LATE_ARRIVAL {
-                exception = checkLateArrival(rule, load, stops);
+            when 'LATE_ARRIVAL' {
+                exc = checkLateArrival(rule, load, stops);
             }
-            when MISSED_PICKUP {
-                exception = checkMissedPickup(rule, load, stops);
+            when 'MISSED_PICKUP' {
+                exc = checkMissedPickup(rule, load, stops);
             }
-            when LONG_IDLE {
-                exception = checkLongIdle(rule, load, stops);
+            when 'LONG_IDLE' {
+                exc = checkLongIdle(rule, load, stops);
             }
-            when EXCESSIVE_DELAY {
-                exception = checkExcessiveDelay(rule, load, stops);
+            when 'EXCESSIVE_DELAY' {
+                exc = checkExcessiveDelay(rule, load, stops);
             }
-            when DRIVER_OFFLINE {
-                exception = checkDriverOffline(rule, load, trackingEvents);
+            when 'DRIVER_OFFLINE' {
+                exc = checkDriverOffline(rule, load, trackingEvents);
             }
-            when GEOFENCE_VIOLATION {
-                exception = checkGeofenceViolation(rule, load, trackingEvents);
+            when 'GEOFENCE_VIOLATION' {
+                exc = checkGeofenceViolation(rule, load, trackingEvents);
             }
-            when EQUIPMENT_BREAKDOWN {
-                exception = checkEquipmentBreakdown(rule, load);
+            when 'EQUIPMENT_BREAKDOWN' {
+                exc = checkEquipmentBreakdown(rule, load);
             }
         }
         
-        return exception;
+        return exc;
     }
     
     /**
@@ -145,8 +145,8 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
      */
     private static Exception__c checkLateArrival(ExceptionRule rule, Load__c load, List<Stop__c> stops) {
         for (Stop__c stop : stops) {
-            if (stop.Type__c == 'PICKUP' && stop.Arrival_DateTime__c != null && stop.Planned_End__c != null) {
-                Long delayMinutes = (stop.Arrival_DateTime__c.getTime() - stop.Planned_End__c.getTime()) / (60 * 1000);
+            if (stop.Stop_Type__c == 'PICKUP' && stop.Actual_Arrival__c != null && stop.Planned_End__c != null) {
+                Long delayMinutes = (stop.Actual_Arrival__c.getTime() - stop.Planned_End__c.getTime()) / (60 * 1000);
                 
                 if (delayMinutes > rule.thresholdMinutes) {
                     return new Exception__c(
@@ -170,10 +170,10 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
         DateTime now = System.now();
         
         for (Stop__c stop : stops) {
-            if (stop.Type__c == 'PICKUP' && 
+            if (stop.Stop_Type__c == 'PICKUP' && 
                 stop.Planned_End__c != null && 
                 stop.Planned_End__c < now && 
-                stop.Arrival_DateTime__c == null) {
+                stop.Actual_Arrival__c == null) {
                 
                 Long minutesOverdue = (now.getTime() - stop.Planned_End__c.getTime()) / (60 * 1000);
                 
@@ -195,8 +195,8 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
      */
     private static Exception__c checkLongIdle(ExceptionRule rule, Load__c load, List<Stop__c> stops) {
         for (Stop__c stop : stops) {
-            if (stop.Arrival_DateTime__c != null && stop.Departure_DateTime__c != null) {
-                Long durationMinutes = (stop.Departure_DateTime__c.getTime() - stop.Arrival_DateTime__c.getTime()) / (60 * 1000);
+            if (stop.Actual_Arrival__c != null && stop.Actual_Departure__c != null) {
+                Long durationMinutes = (stop.Actual_Departure__c.getTime() - stop.Actual_Arrival__c.getTime()) / (60 * 1000);
                 
                 if (durationMinutes > rule.thresholdMinutes) {
                     return new Exception__c(
@@ -218,7 +218,7 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
      */
     private static Exception__c checkExcessiveDelay(ExceptionRule rule, Load__c load, List<Stop__c> stops) {
         for (Stop__c stop : stops) {
-            if (stop.Type__c == 'DELIVERY' && stop.ETA__c != null && stop.Planned_End__c != null) {
+            if (stop.Stop_Type__c == 'DELIVERY' && stop.ETA__c != null && stop.Planned_End__c != null) {
                 Long delayDays = (stop.ETA__c.getTime() - stop.Planned_End__c.getTime()) / (24 * 60 * 60 * 1000);
                 
                 if (delayDays > rule.thresholdMinutes / (24 * 60)) { // Convert threshold minutes to days
@@ -291,8 +291,8 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
         
         Double thresholdMiles = rule.thresholdMinutes; // Repurpose threshold as distance in miles
         Boolean isOutsideGeofence = isPointOutsideGeofence(load.Route_Geofence_Polygon__c, 
-                                                            lastEvent.Latitude__c, 
-                                                            lastEvent.Longitude__c,
+                                                            (Double)lastEvent.Latitude__c, 
+                                                            (Double)lastEvent.Longitude__c,
                                                             thresholdMiles);
         
         if (isOutsideGeofence) {
@@ -341,25 +341,24 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
      * Load all active exception rules from custom metadata
      */
     private static Map<String, ExceptionRule> loadExceptionRules() {
+        // TODO: Phase 2 - Load from ExceptionRules__mdt custom metadata type
+        // ExceptionRules__mdt does not exist yet — return hardcoded defaults
         Map<String, ExceptionRule> rules = new Map<String, ExceptionRule>();
         
-        List<ExceptionRules__mdt> rulesList = [
-            SELECT DeveloperName, Rule_Type__c, Threshold_Minutes__c, 
-                   Severity__c, Description__c, IsActive__c
-            FROM ExceptionRules__mdt
-            WHERE IsActive__c = true
-            LIMIT 100
-        ];
+        String[] ruleTypes = new String[]{
+            RULE_LATE_ARRIVAL, RULE_MISSED_PICKUP, RULE_LONG_IDLE,
+            RULE_EXCESSIVE_DELAY, RULE_DRIVER_OFFLINE, RULE_GEOFENCE_VIOLATION,
+            RULE_EQUIPMENT_BREAKDOWN
+        };
         
-        for (ExceptionRules__mdt rule : rulesList) {
+        for (String ruleType : ruleTypes) {
             ExceptionRule exRule = new ExceptionRule();
-            exRule.ruleType = rule.Rule_Type__c;
-            exRule.thresholdMinutes = (Integer) rule.Threshold_Minutes__c;
-            exRule.severity = rule.Severity__c;
-            exRule.description = rule.Description__c;
-            exRule.isActive = rule.IsActive__c;
-            
-            rules.put(rule.Rule_Type__c, exRule);
+            exRule.ruleType = ruleType;
+            exRule.thresholdMinutes = 60; // default 60 min
+            exRule.severity = SEVERITY_ALERT;
+            exRule.description = ruleType.replace('_', ' ');
+            exRule.isActive = true;
+            rules.put(ruleType, exRule);
         }
         
         return rules;
@@ -371,9 +370,9 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
     private static List<Load__c> getActiveLoads() {
         return [
             SELECT Id, Name, Status__c, Route_Geofence_Polygon__c,
-                   Pickup_Window_Start__c, Pickup_Window_End__c,
-                   Delivery_Window_Start__c, Delivery_Window_End__c,
-                   Equipment__c, Driver__c, Current_Location__Latitude__s,
+                   Pickup_Window_Begin__c, Pickup_Window_End__c,
+                   Delivery_Window_Begin__c, Delivery_Window_End__c,
+                   Driver__c, Current_Location__Latitude__s,
                    Current_Location__Longitude__s
             FROM Load__c
             WHERE Status__c IN ('IN_TRANSIT', 'AT_PICKUP', 'AT_DELIVERY')
@@ -388,8 +387,8 @@ public without sharing class ExceptionDetectionEngine implements Schedulable {
         Map<Id, List<Stop__c>> stopsMap = new Map<Id, List<Stop__c>>();
         
         List<Stop__c> stops = [
-            SELECT Id, Load__c, Name, Type__c, Arrival_DateTime__c, Departure_DateTime__c,
-                   Planned_Start__c, Planned_End__c, ETA__c, Sequence__c
+            SELECT Id, Load__c, Name, Stop_Type__c, Actual_Arrival__c, Actual_Departure__c,
+                   Window_Begin__c, Planned_End__c, ETA__c, Sequence__c
             FROM Stop__c
             WHERE Load__c IN :loadIds
             ORDER BY Load__c, Sequence__c

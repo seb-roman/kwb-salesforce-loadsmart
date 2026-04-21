@@ -70,7 +70,7 @@ public with sharing class ShipperAccountProfileController {
                                MailingCity, MailingState, MailingPostalCode, MailingCountry
                         FROM Contact
                         WHERE AccountId = :shipperAccountId
-                          AND (Is_Billing_Contact__c = true OR Is_Primary_Contact__c = true)
+                          AND (Is_Billing_Contact__c = true OR Is_Billing_Contact__c = true)
                         ORDER BY Is_Billing_Contact__c DESC
                         LIMIT 1
                     ];
@@ -80,46 +80,18 @@ public with sharing class ShipperAccountProfileController {
                 System.debug('Contact object not accessible: ' + e.getMessage());
             }
 
-            // Query payment method
-            PaymentMethod__c paymentMethod = null;
-            try {
-                if (SecurityUtil.hasCRUDAccess(PaymentMethod__c.SObjectType, 'READ')) {
-                    List<PaymentMethod__c> paymentMethods = [
-                        SELECT Id, Payment_Type__c, Bank_Name__c, Account_Last_Four__c,
-                               Is_Default__c, Verified__c
-                        FROM PaymentMethod__c
-                        WHERE Account__c = :shipperAccountId
-                          AND Is_Default__c = true
-                        LIMIT 1
-                    ];
-                    paymentMethod = paymentMethods.isEmpty() ? null : paymentMethods[0];
-                }
-            } catch (SObjectException e) {
-                System.debug('PaymentMethod__c object not accessible: ' + e.getMessage());
-            }
+            // TODO: Phase 2 - Query payment method (PaymentMethod__c not yet deployed)
+            Map<String, Object> paymentMethod = null;
 
-            // Query account manager - graceful error handling
-            List<User> accountManagers = new List<User>();
-            try {
-                if (SecurityUtil.hasCRUDAccess(User.SObjectType, 'READ')) {
-                    accountManagers = [
-                        SELECT Id, Name, Email, Phone
-                        FROM User
-                        WHERE Id IN (SELECT AccountTeamMemberId FROM AccountTeamMember 
-                                     WHERE AccountId = :shipperAccountId AND TeamMemberRole = 'Account Manager')
-                        LIMIT 1
-                    ];
-                }
-            } catch (SObjectException e) {
-                System.debug('User object not accessible: ' + e.getMessage());
-            }
+            // TODO: Phase 2 - Query account manager via AccountTeamMember (not supported in current setup)
+            User accountManager = null;
 
             // Build response
             AccountDetail detail = new AccountDetail();
             detail.account = account;
             detail.billingContact = billingContact;
             detail.paymentMethod = paymentMethod;
-            detail.accountManager = accountManagers.isEmpty() ? null : accountManagers[0];
+            detail.accountManager = accountManager;
             
             // Calculate account metrics
             detail.totalLoadsYTD = getTotalLoadsYTD(shipperAccountId);
@@ -266,71 +238,15 @@ public with sharing class ShipperAccountProfileController {
      * @param creditCardLastFour - Last 4 digits of credit card (if credit card)
      * @return Updated PaymentMethod__c
      */
+    // TODO: Phase 2 - updatePaymentMethod (PaymentMethod__c not yet deployed)
     @AuraEnabled
-    public static PaymentMethod__c updatePaymentMethod(
+    public static Map<String, Object> updatePaymentMethod(
         String paymentType,
         String bankName,
         String accountLastFour,
         String creditCardLastFour
     ) {
-        try {
-            // SECURITY: Determine CRUD operation (we'll check both Create and Update)
-            List<PaymentMethod__c> existing = [
-                SELECT Id
-                FROM PaymentMethod__c
-                WHERE Account__c = :ShipperLoadListController.getShipperAccountId()
-                  AND Is_Default__c = true
-                LIMIT 1
-            ];
-
-            Boolean isCreate = existing.isEmpty();
-            String crudOperation = isCreate ? 'CREATE' : 'UPDATE';
-
-            // SECURITY: Check CRUD access to PaymentMethod__c
-            SecurityUtil.enforceAccess(
-                SecurityUtil.hasCRUDAccess(PaymentMethod__c.SObjectType, crudOperation),
-                'You do not have permission to ' + crudOperation.toLowerCase() + ' payment methods'
-            );
-
-            // SECURITY: Check FLS access to all payment fields
-            List<String> paymentFields = new List<String>{
-                'Account__c', 'Payment_Type__c', 'Bank_Name__c', 'Account_Last_Four__c',
-                'Is_Default__c', 'Verified__c'
-            };
-            SecurityUtil.enforceAccess(
-                SecurityUtil.hasFieldLevelSecurityAccess(PaymentMethod__c.SObjectType, paymentFields, 'UPDATE'),
-                'You do not have permission to modify payment method fields'
-            );
-
-            // SECURITY: Validate payment type against picklist
-            SecurityUtil.enforceAccess(
-                SecurityUtil.isValidPicklistValue(PaymentMethod__c.Payment_Type__c, paymentType),
-                'Invalid payment type'
-            );
-
-            String shipperAccountId = ShipperLoadListController.getShipperAccountId();
-
-            PaymentMethod__c paymentMethod = new PaymentMethod__c(
-                Account__c = shipperAccountId,
-                Payment_Type__c = paymentType,
-                Bank_Name__c = bankName,
-                Account_Last_Four__c = accountLastFour,
-                Is_Default__c = true,
-                Verified__c = false
-            );
-
-            if (!existing.isEmpty()) {
-                paymentMethod.Id = existing[0].Id;
-                update paymentMethod;
-            } else {
-                insert paymentMethod;
-            }
-
-            return paymentMethod;
-
-        } catch (Exception e) {
-            throw new AuraHandledException('Error updating payment method: ' + e.getMessage());
-        }
+        throw new AuraHandledException('Payment method management not yet available (Phase 2)');
     }
 
     /**
@@ -382,7 +298,7 @@ public with sharing class ShipperAccountProfileController {
             return [
                 SELECT COUNT()
                 FROM Load__c
-                WHERE Shipper_Account__c = :shipperAccountId
+                WHERE Shipper__c = :shipperAccountId
                   AND Pickup_Date__c >= :startOfYear
             ];
         } catch (Exception e) {
@@ -399,9 +315,9 @@ public with sharing class ShipperAccountProfileController {
             Date startOfYear = Date.newInstance(year, 1, 1);
             
             List<AggregateResult> results = [
-                SELECT SUM(Shipper_Rate__c) totalSpend
+                SELECT SUM(Billing_Rate__c) totalSpend
                 FROM Load__c
-                WHERE Shipper_Account__c = :shipperAccountId
+                WHERE Shipper__c = :shipperAccountId
                   AND Pickup_Date__c >= :startOfYear
                   AND Status__c IN ('Delivered', 'In Transit')
             ];
@@ -424,7 +340,7 @@ public with sharing class ShipperAccountProfileController {
         @AuraEnabled
         public Contact billingContact;
         @AuraEnabled
-        public PaymentMethod__c paymentMethod;
+        public Map<String, Object> paymentMethod; // TODO: Phase 2 - PaymentMethod__c
         @AuraEnabled
         public User accountManager;
         @AuraEnabled

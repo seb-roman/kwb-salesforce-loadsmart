@@ -78,15 +78,15 @@ private class PortalControllerTest {
         // Create test loads
         Load__c load1 = new Load__c(
             Load_Number__c = 'LOAD001',
-            Reference_Number__c = 'REF001',
-            Shipper_Account__c = shipperAccount.Id,
-            Assigned_Carrier__c = carrierAccount.Id,
-            Origin_City__c = 'Columbus',
-            Destination_City__c = 'Cincinnati',
-            Shipper_Rate__c = 2500,
+            Customer_Reference_Number__c = 'REF001',
+            Shipper__c = shipperAccount.Id,
+            Carrier__c = carrierAccount.Id,
+            Shipper_City__c = 'Columbus',
+            Receiver_City__c = 'Cincinnati',
+            Billing_Rate__c = 2500,
             Carrier_Rate__c = 2000,
             Status__c = 'IN_TRANSIT',
-            Distance__c = 100,
+            Distance_Miles__c = 100,
             Current_Location__Latitude__s = 39.9612,
             Current_Location__Longitude__s = -82.9988,
             Current_Address__c = 'Columbus, OH'
@@ -95,14 +95,14 @@ private class PortalControllerTest {
         
         Load__c load2 = new Load__c(
             Load_Number__c = 'LOAD002',
-            Reference_Number__c = 'REF002',
-            Shipper_Account__c = shipperAccount.Id,
-            Origin_City__c = 'Cleveland',
-            Destination_City__c = 'Pittsburgh',
-            Shipper_Rate__c = 3000,
+            Customer_Reference_Number__c = 'REF002',
+            Shipper__c = shipperAccount.Id,
+            Shipper_City__c = 'Cleveland',
+            Receiver_City__c = 'Pittsburgh',
+            Billing_Rate__c = 3000,
             Carrier_Rate__c = 2400,
             Status__c = 'AVAILABLE',
-            Distance__c = 150,
+            Distance_Miles__c = 150,
             Current_Location__Latitude__s = 41.4993,
             Current_Location__Longitude__s = -81.6944
         );
@@ -146,7 +146,7 @@ private class PortalControllerTest {
             ShipperPortalController.LoadDetail detail = 
                 ShipperPortalController.getLoadDetail(load.Id);
             
-            System.assertNotNull(detail, 'Should return load detail');
+            Assert.isNotNull(detail);
             System.assertEquals('LOAD001', detail.loadNumber);
             System.assertEquals('Test Carrier LLC', detail.assignedCarrier);
         }
@@ -161,9 +161,9 @@ private class PortalControllerTest {
         insert otherShipper;
         Load__c otherLoad = new Load__c(
             Load_Number__c = 'LOAD999',
-            Shipper_Account__c = otherShipper.Id,
-            Origin_City__c = 'Test',
-            Destination_City__c = 'Test',
+            Shipper__c = otherShipper.Id,
+            Shipper_City__c = 'Test',
+            Receiver_City__c = 'Test',
             Status__c = 'AVAILABLE'
         );
         insert otherLoad;
@@ -212,7 +212,7 @@ private class PortalControllerTest {
         System.runAs(shipperUser) {
             try {
                 // Try SQL injection
-                ShipperPortalController.searchLoads("' OR '1'='1");
+                ShipperPortalController.searchLoads('\' OR \'1\'=\'1');
                 System.assert(true, 'SOQL injection was safely escaped');
             } catch (Exception e) {
                 System.assert(true, 'Correctly handled injection attempt');
@@ -271,9 +271,9 @@ private class PortalControllerTest {
             
             System.assert(result.contains('successfully'), 'Should confirm decline');
             
-            Load__c updated = [SELECT Status__c, Assigned_Carrier__c FROM Load__c WHERE Id = :load.Id];
+            Load__c updated = [SELECT Status__c, Carrier__c FROM Load__c WHERE Id = :load.Id];
             System.assertEquals('AVAILABLE', updated.Status__c);
-            System.assertEquals(null, updated.Assigned_Carrier__c);
+            System.assertEquals(null, updated.Carrier__c);
         }
     }
     
@@ -294,7 +294,7 @@ private class PortalControllerTest {
                 CarrierPortalController.uploadPOD(request);
             
             System.assert(response.success, 'POD upload should succeed');
-            System.assertNotNull(response.podId);
+            Assert.isNotNull(response.podId);
         }
     }
     
@@ -339,7 +339,7 @@ private class PortalControllerTest {
             PortalReportController.OnTimeDeliveryReport report = 
                 PortalReportController.getOnTimeDeliveryReport();
             
-            System.assertNotNull(report);
+            Assert.isNotNull(report);
             System.assertEquals(0, report.totalCount, 'No delivered loads yet');
         }
     }
@@ -352,7 +352,7 @@ private class PortalControllerTest {
             PortalReportController.CostPerMileReport report = 
                 PortalReportController.getCostPerMileReport();
             
-            System.assertNotNull(report);
+            Assert.isNotNull(report);
             System.assertEquals(0, report.buckets.size(), 'No delivered loads yet');
         }
     }
@@ -365,7 +365,7 @@ private class PortalControllerTest {
             PortalReportController.UtilizationReport report = 
                 PortalReportController.getUtilizationReport();
             
-            System.assertNotNull(report);
+            Assert.isNotNull(report);
             System.assertEquals(0, report.totalLoads);
         }
     }
@@ -378,7 +378,7 @@ private class PortalControllerTest {
             PortalReportController.TrendReport report = 
                 PortalReportController.getTrendReport();
             
-            System.assertNotNull(report);
+            Assert.isNotNull(report);
             System.assertEquals(0, report.trends.size());
         }
     }
@@ -391,7 +391,7 @@ private class PortalControllerTest {
             PortalReportController.ForecastReport report = 
                 PortalReportController.getLoadForecast();
             
-            System.assertNotNull(report);
+            Assert.isNotNull(report);
             System.assertEquals(7, report.forecast.size(), 'Should forecast 7 days');
         }
     }
@@ -431,7 +431,7 @@ private class PortalControllerTest {
                 ShipperPortalController.getLoadList(null, null);
             
             // Should use defaults (page 1, 20 per page)
-            System.assertNotNull(results);
+            Assert.isNotNull(results);
         }
     }
 }

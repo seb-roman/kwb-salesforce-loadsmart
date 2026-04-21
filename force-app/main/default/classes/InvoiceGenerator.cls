@@ -111,8 +111,8 @@ public class InvoiceGenerator {
         return load.POD_Captured__c == true
             && String.isNotBlank(load.BOL_Number__c)
             && load.Shipper__c != null
-            && load.Shipper_Rate__c != null
-            && load.Shipper_Rate__c > 0;
+            && load.Billing_Rate__c != null
+            && load.Billing_Rate__c > 0;
     }
     
     /**
@@ -149,7 +149,7 @@ public class InvoiceGenerator {
         invoice.Load__c = load.Id;
         invoice.Invoice_Date__c = Date.today();
         invoice.Status__c = 'Draft'; // Never auto-send
-        invoice.BOL_Number__c = load.BOL_Number__c;
+        // TODO: Phase 2 - invoice.BOL_Number__c (field not yet on Invoice__c)
         
         // Generate unique invoice number
         invoice.Invoice_Number__c = generateInvoiceNumber();
@@ -182,7 +182,7 @@ public class InvoiceGenerator {
         InvoiceLineItem__c freightLine = new InvoiceLineItem__c();
         freightLine.Invoice__c = invoice.Id;
         freightLine.Line_Item_Type__c = 'Base_Freight';
-        freightLine.Amount__c = load.Shipper_Rate__c;
+        freightLine.Amount__c = load.Billing_Rate__c;
         freightLine.Description__c = 'Base freight charge';
         lineItems.add(freightLine);
         

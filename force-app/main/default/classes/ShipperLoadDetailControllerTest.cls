@@ -35,7 +35,7 @@ public class ShipperLoadDetailControllerTest {
         // Create carrier
         Carrier__c carrier = new Carrier__c(
             Name = 'Test Carrier',
-            MC_DOT_Number__c = '1234567',
+            MC_Number__c = '1234567',
             Phone__c = '555-0123',
             Email__c = 'carrier@test.com'
         );
@@ -43,7 +43,7 @@ public class ShipperLoadDetailControllerTest {
 
         // Create contact for shipper1
         Contact contact1 = new Contact(
-            AccountId = shipper1.Id,
+            // AccountId from ContactId
             FirstName = 'John',
             LastName = 'Shipper',
             Email = 'john@shipper1.com'
@@ -52,7 +52,7 @@ public class ShipperLoadDetailControllerTest {
 
         // Create contact for shipper2
         Contact contact2 = new Contact(
-            AccountId = shipper2.Id,
+            // AccountId from ContactId
             FirstName = 'Jane',
             LastName = 'Shipper2',
             Email = 'jane@shipper2.com'
@@ -66,7 +66,7 @@ public class ShipperLoadDetailControllerTest {
             Email = 'john@shipper1.com',
             Username = 'john.shipper1@shipper.com.portal',
             ContactId = contact1.Id,
-            AccountId = shipper1.Id,
+            // AccountId from ContactId
             ProfileId = [SELECT Id FROM Profile WHERE Name = 'Shipper User' LIMIT 1]?.Id,
             IsActive = true
         );
@@ -79,7 +79,7 @@ public class ShipperLoadDetailControllerTest {
             Email = 'jane@shipper2.com',
             Username = 'jane.shipper2@shipper.com.portal',
             ContactId = contact2.Id,
-            AccountId = shipper2.Id,
+            // AccountId from ContactId
             ProfileId = [SELECT Id FROM Profile WHERE Name = 'Shipper User' LIMIT 1]?.Id,
             IsActive = true
         );
@@ -91,30 +91,30 @@ public class ShipperLoadDetailControllerTest {
         // Load for shipper1
         loads.add(new Load__c(
             Name = 'LOAD-001',
-            Shipper_Account__c = shipper1.Id,
+            Shipper__c = shipper1.Id,
             Status__c = 'Posted',
             Pickup_Date__c = System.today(),
             Estimated_Delivery__c = System.today().addDays(5),
             Load_Type__c = 'FTL',
-            Pickup_City__c = 'Columbus',
-            Delivery_City__c = 'Atlanta',
-            Shipper_Rate__c = 2500,
+            Shipper_City__c = 'Columbus',
+            Receiver_City__c = 'Atlanta',
+            Billing_Rate__c = 2500,
             Equipment_Type__c = 'Flatbed',
-            Weight__c = 45000,
+            Weight_lbs__c = 45000,
             Commodity__c = 'General Freight',
             Carrier__c = carrier.Id,
-            Is_Deleted__c = false,
+            
             Pickup_Contact__c = 'John Doe',
             Pickup_Company__c = 'ABC Warehousing',
-            Pickup_Address__c = '123 Main St',
-            Pickup_Postal_Code__c = '43085',
-            Pickup_State__c = 'OH',
+            Shipper_Address__c = '123 Main St',
+            Shipper_Zip__c = '43085',
+            Shipper_State__c = 'OH',
             Pickup_Country__c = 'USA',
             Delivery_Contact__c = 'Jane Smith',
             Delivery_Company__c = 'XYZ Distribution',
-            Delivery_Address__c = '456 Oak Ave',
-            Delivery_Postal_Code__c = '30303',
-            Delivery_State__c = 'GA',
+            Receiver_Address__c = '456 Oak Ave',
+            Receiver_Zip__c = '30303',
+            Receiver_State__c = 'GA',
             Delivery_Country__c = 'USA',
             Fuel_Surcharge__c = 250,
             Notes__c = 'Handle with care'
@@ -123,30 +123,30 @@ public class ShipperLoadDetailControllerTest {
         // Load for shipper2
         loads.add(new Load__c(
             Name = 'LOAD-002',
-            Shipper_Account__c = shipper2.Id,
+            Shipper__c = shipper2.Id,
             Status__c = 'In Transit',
             Pickup_Date__c = System.today().addDays(-1),
             Estimated_Delivery__c = System.today().addDays(6),
             Load_Type__c = 'LTL',
-            Pickup_City__c = 'Boston',
-            Delivery_City__c = 'New York',
-            Shipper_Rate__c = 1500,
+            Shipper_City__c = 'Boston',
+            Receiver_City__c = 'New York',
+            Billing_Rate__c = 1500,
             Equipment_Type__c = 'Van',
-            Weight__c = 15000,
+            Weight_lbs__c = 15000,
             Commodity__c = 'Electronics',
             Carrier__c = carrier.Id,
-            Is_Deleted__c = false,
+            
             Pickup_Contact__c = 'Bob Johnson',
             Pickup_Company__c = 'Tech Supplies',
-            Pickup_Address__c = '789 Tech Blvd',
-            Pickup_Postal_Code__c = '02101',
-            Pickup_State__c = 'MA',
+            Shipper_Address__c = '789 Tech Blvd',
+            Shipper_Zip__c = '02101',
+            Shipper_State__c = 'MA',
             Pickup_Country__c = 'USA',
             Delivery_Contact__c = 'Alice Brown',
             Delivery_Company__c = 'Metro Distribution',
-            Delivery_Address__c = '321 Park Ave',
-            Delivery_Postal_Code__c = '10001',
-            Delivery_State__c = 'NY',
+            Receiver_Address__c = '321 Park Ave',
+            Receiver_Zip__c = '10001',
+            Receiver_State__c = 'NY',
             Delivery_Country__c = 'USA',
             Fuel_Surcharge__c = 150
         ));
@@ -222,7 +222,7 @@ public class ShipperLoadDetailControllerTest {
         Load__c load = [SELECT Id FROM Load__c WHERE Name = 'LOAD-001' LIMIT 1];
 
         // Mark load as deleted
-        load.Is_Deleted__c = true;
+        
         update load;
 
         Test.startTest();
@@ -304,7 +304,7 @@ public class ShipperLoadDetailControllerTest {
         User testUser = [SELECT Id FROM User WHERE Username = 'john.shipper1@shipper.com.portal' LIMIT 1];
         Load__c load = [SELECT Id FROM Load__c WHERE Name = 'LOAD-001' LIMIT 1];
 
-        load.Is_Deleted__c = true;
+        
         update load;
 
         Test.startTest();
@@ -385,7 +385,7 @@ public class ShipperLoadDetailControllerTest {
     @isTest
     static void testMultipleLoadDetails() {
         User testUser = [SELECT Id FROM User WHERE Username = 'john.shipper1@shipper.com.portal' LIMIT 1];
-        List<Load__c> loads = [SELECT Id FROM Load__c WHERE Shipper_Account__c = :testUser.AccountId];
+        List<Load__c> loads = [SELECT Id FROM Load__c WHERE Shipper__c = :testUser.AccountId];
 
         Test.startTest();
         System.runAs(testUser) {
