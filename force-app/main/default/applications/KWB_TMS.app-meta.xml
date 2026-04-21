@@ -18,5 +18,4 @@
     <tabs>Settlement__c</tabs>
     <tabs>Exception__c</tabs>
     <uiType>Lightning</uiType>
-    <utilityBar></utilityBar>
 </CustomApplication>
