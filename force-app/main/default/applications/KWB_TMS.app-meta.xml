@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>Load__c</defaultLandingTab>
+    <description>KWB Logistics Transportation Management System</description>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
+    <isServiceCloudConsole>false</isServiceCloudConsole>
+    <label>KWB TMS</label>
+    <navType>Standard</navType>
+    <tabs>Load__c</tabs>
+    <tabs>Stop__c</tabs>
+    <tabs>Carrier__c</tabs>
+    <tabs>Driver__c</tabs>
+    <tabs>Equipment__c</tabs>
+    <tabs>Invoice__c</tabs>
+    <tabs>Settlement__c</tabs>
+    <tabs>Exception__c</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar></utilityBar>
+</CustomApplication>
